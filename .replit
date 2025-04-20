@@ -1,0 +1,8 @@
+modules = ["nodejs-18", "go-1.21", "web"]
+run = "npm run dev"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run dev"]
