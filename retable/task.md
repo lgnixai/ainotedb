@@ -11,11 +11,11 @@
 
 ## Core Modules
 ### Authentication & Authorization
-- [ ] User registration
-- [ ] User login/logout
-- [ ] JWT implementation
-- [ ] Role-based access control
-- [ ] Permission management
+- [x] User registration
+- [x] User login/logout
+- [x] JWT implementation
+- [x] Role-based access control
+- [x] Permission management
 
 ### Space Management
 - [ ] Create space
