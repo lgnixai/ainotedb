@@ -2,11 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/undb/undb-go/internal/space/handler"
 )
 
 // RegisterSpaceRoutes 注册空间路由
-func RegisterSpaceRoutes(r *gin.RouterGroup, h *handler.SpaceHandler) {
+func RegisterRoutes(r *gin.RouterGroup, h *handler.SpaceHandler) {
 	spaces := r.Group("/spaces")
 	{
 		spaces.POST("", h.CreateSpace)

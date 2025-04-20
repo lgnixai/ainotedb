@@ -2,11 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/undb/undb-go/internal/field/handler"
 )
 
 // RegisterFieldRoutes 注册字段路由
-func RegisterFieldRoutes(r *gin.RouterGroup, h *handler.FieldHandler) {
+func RegisterRoutes(r *gin.RouterGroup, h *handler.FieldHandler) {
 	fields := r.Group("/fields")
 	{
 		fields.POST("", h.CreateField)

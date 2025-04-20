@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	"github.com/undb/undb-go/internal/realtime/service"
 )
 
 var upgrader = websocket.Upgrader{
@@ -19,12 +20,12 @@ var upgrader = websocket.Upgrader{
 
 // RealtimeHandler handles WebSocket connections.
 type RealtimeHandler struct {
-	// TODO: Add dependencies like a service to manage connections/subscriptions
+	svc *service.RealtimeService
 }
 
 // NewRealtimeHandler creates a new RealtimeHandler.
-func NewRealtimeHandler() *RealtimeHandler {
-	return &RealtimeHandler{}
+func NewRealtimeHandler(svc *service.RealtimeService) *RealtimeHandler {
+	return &RealtimeHandler{svc: svc}
 }
 
 // ServeWS handles WebSocket requests.

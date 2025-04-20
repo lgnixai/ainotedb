@@ -1,10 +1,9 @@
-
 package service
 
 import (
+	"context"
+	"errors"
 	"time"
-	"github.com/golang-jwt/jwt"
-	"github.com/undb-go/internal/user/model"
 )
 
 type AuthService struct {
@@ -20,12 +19,12 @@ type TokenClaims struct {
 func NewAuthService(userService UserService, jwtSecret string) *AuthService {
 	return &AuthService{
 		userService: userService,
-		jwtSecret:  []byte(jwtSecret),
+		jwtSecret:   []byte(jwtSecret),
 	}
 }
 
-func (s *AuthService) Login(email, password string) (string, error) {
-	user, err := s.userService.GetUserByEmail(email)
+func (s *AuthService) Login(ctx context.Context, email, password string) (string, error) {
+	user, err := s.userService.GetUserByEmail(ctx, email)
 	if err != nil {
 		return "", err
 	}
@@ -59,3 +58,6 @@ func (s *AuthService) VerifyToken(tokenString string) (*TokenClaims, error) {
 
 	return nil, ErrInvalidToken
 }
+
+var ErrInvalidCredentials = errors.New("invalid credentials")
+var ErrInvalidToken = errors.New("invalid token")

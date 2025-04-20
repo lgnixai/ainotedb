@@ -71,3 +71,12 @@ func (s *userService) Update(ctx context.Context, user *model.User) error {
 func (s *userService) Delete(ctx context.Context, id string) error {
 	return s.repo.Delete(ctx, id)
 }
+
+// GetUserByEmail gets a user by email
+func (s *userService) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+	user, err := s.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}

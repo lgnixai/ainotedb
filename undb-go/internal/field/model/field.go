@@ -1,12 +1,13 @@
 package model
 
 import (
+	"encoding/json"
 	"time"
 
 	"gorm.io/gorm"
 )
 
-// FieldType 定义字段类型
+// FieldType defines field types
 type FieldType string
 
 const (
@@ -17,61 +18,107 @@ const (
 	FieldTypeSelect      FieldType = "select"
 	FieldTypeMultiSelect FieldType = "multi_select"
 	FieldTypeReference   FieldType = "reference"
+	FieldTypeLookup    FieldType = "lookup"
+	FieldTypeRollup    FieldType = "rollup"
 )
 
-// Field 表示一个字段
+// FieldOptions represents field options
+type FieldOptions struct {
+	// Reference field options
+	ForeignTableID string `json:"foreignTableId,omitempty"`
+	SymmetricFieldID string `json:"symmetricFieldId,omitempty"`
+
+	// Lookup field options
+	ReferenceFieldID string `json:"referenceFieldId,omitempty"`
+	DisplayFieldID string `json:"displayFieldId,omitempty"`
+
+	// Rollup field options
+	RollupFieldID string `json:"rollupFieldId,omitempty"`
+	AggregateFunction string `json:"fn,omitempty"` // count, sum, avg, etc.
+}
+
+// Field represents a field
 type Field struct {
-	ID          string    `json:"id" gorm:"primaryKey"`
-	TableID     string    `json:"table_id" gorm:"index"`
-	Name        string    `json:"name"`
-	Type        FieldType `json:"type"`
-	Description string    `json:"description"`
-	Required    bool      `json:"required"`
-	Unique      bool      `json:"unique"`
-	Options     string    `json:"options" gorm:"type:text"`
+	ID          string          `json:"id" gorm:"primaryKey"`
+	TableID     string          `json:"table_id" gorm:"index"`
+	Name        string          `json:"name"`
+	Type        FieldType       `json:"type"`
+	Description string          `json:"description"`
+	Required    bool            `json:"required"`
+	Unique      bool            `json:"unique"`
+	Options     FieldOptions    `json:"options,omitempty" gorm:"type:text"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-// TableName 指定表名
+// TableName specifies table name
 func (Field) TableName() string {
 	return "fields"
 }
 
-// BeforeCreate 创建前的钩子
+// BeforeCreate before create hook
 func (f *Field) BeforeCreate(tx *gorm.DB) error {
 	f.CreatedAt = time.Now()
 	f.UpdatedAt = time.Now()
 	return nil
 }
 
-// BeforeUpdate 更新前的钩子
+// BeforeUpdate before update hook
 func (f *Field) BeforeUpdate(tx *gorm.DB) error {
 	f.UpdatedAt = time.Now()
 	return nil
 }
 
-// Validate 验证字段数据
+// Validate validates field data
 func (f *Field) Validate() error {
 	if f.Name == "" {
 		return ErrEmptyFieldName
 	}
-	if f.Type == "" {
-		return ErrEmptyFieldType
+
+	switch f.Type {
+	case FieldTypeReference:
+		if f.Options.ForeignTableID == "" {
+			return ErrInvalidReferenceField
+		}
+	case FieldTypeLookup:
+		if f.Options.ReferenceFieldID == "" || f.Options.DisplayFieldID == "" {
+			return ErrInvalidLookupField
+		}
+	case FieldTypeRollup:
+		if f.Options.RollupFieldID == "" || f.Options.ReferenceFieldID == "" {
+			return ErrInvalidRollupField
+		}
 	}
-	if !isValidFieldType(f.Type) {
-		return ErrInvalidFieldType
-	}
+
 	return nil
 }
 
-// isValidFieldType 检查字段类型是否有效
+// isValidFieldType checks if field type is valid
 func isValidFieldType(t FieldType) bool {
 	switch t {
 	case FieldTypeText, FieldTypeNumber, FieldTypeBoolean, FieldTypeDate,
-		FieldTypeSelect, FieldTypeMultiSelect, FieldTypeReference:
+		FieldTypeSelect, FieldTypeMultiSelect, FieldTypeReference, FieldTypeLookup, FieldTypeRollup:
 		return true
 	default:
 		return false
 	}
+}
+
+var (
+	ErrEmptyFieldName     = &Error{Code: "empty_field_name", Message: "field name cannot be empty"}
+	ErrEmptyFieldType     = &Error{Code: "empty_field_type", Message: "field type cannot be empty"}
+	ErrInvalidFieldType   = &Error{Code: "invalid_field_type", Message: "invalid field type"}
+	ErrInvalidReferenceField = &Error{Code: "invalid_reference_field", Message: "invalid reference field"}
+	ErrInvalidLookupField = &Error{Code: "invalid_lookup_field", Message: "invalid lookup field"}
+	ErrInvalidRollupField = &Error{Code: "invalid_rollup_field", Message: "invalid rollup field"}
+)
+
+type Error struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+func (e *Error) Error() string {
+	data, _ := json.Marshal(e)
+	return string(data)
 }

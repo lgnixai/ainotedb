@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Add import for errors
+
 // Record 表示一条记录
 type Record struct {
 	ID        string                 `json:"id" gorm:"primaryKey"`
@@ -58,7 +60,7 @@ type BatchCreateRecordRequest struct {
 type BatchCreateRecordResponse struct {
 	SuccessCount int      `json:"success_count"`
 	FailedCount  int      `json:"failed_count"`
-	CreatedIDs   []string `json:"created_ids"` // IDs of successfully created records
+	CreatedIDs   []string `json:"created_ids"`      // IDs of successfully created records
 	Errors       []string `json:"errors,omitempty"` // Optional: Detailed errors for failed creations
 }
 
@@ -107,8 +109,8 @@ const (
 type AggregationRequest struct {
 	TableID     string          `json:"table_id" binding:"required"`
 	Aggregation AggregationType `json:"aggregation" binding:"required"`
-	Field       string          `json:"field,omitempty"` // Required for SUM, AVG, MIN, MAX
-	Filter      string          `json:"filter,omitempty"` // Optional filter criteria (e.g., SQL WHERE clause)
+	Field       string          `json:"field,omitempty"`    // Required for SUM, AVG, MIN, MAX
+	Filter      string          `json:"filter,omitempty"`   // Optional filter criteria (e.g., SQL WHERE clause)
 	GroupBy     []string        `json:"group_by,omitempty"` // Optional grouping fields
 }
 
@@ -120,11 +122,11 @@ type AggregationResponse struct {
 // PivotRequest 定义透视表查询请求
 type PivotRequest struct {
 	TableID string   `json:"table_id" binding:"required"`
-	Rows    []string `json:"rows" binding:"required,min=1"`     // Fields for rows
+	Rows    []string `json:"rows" binding:"required,min=1"`    // Fields for rows
 	Columns []string `json:"columns" binding:"required,min=1"` // Fields for columns
-	Values  string   `json:"values" binding:"required"`       // Field to aggregate for cell values
-	AggFunc string   `json:"agg_func" binding:"required"`    // Aggregation function (e.g., SUM, COUNT)
-	Filter  string   `json:"filter,omitempty"`               // Optional filter criteria
+	Values  string   `json:"values" binding:"required"`        // Field to aggregate for cell values
+	AggFunc string   `json:"agg_func" binding:"required"`      // Aggregation function (e.g., SUM, COUNT)
+	Filter  string   `json:"filter,omitempty"`                 // Optional filter criteria
 }
 
 // PivotResponse 定义透视表查询响应 (Structure depends heavily on implementation)
@@ -133,10 +135,3 @@ type PivotResponse struct {
 }
 
 // Error types (Consider moving to a dedicated errors package)
-var (
-	ErrEmptyTableID = errors.New("table_id cannot be empty")
-	ErrEmptyFields  = errors.New("record data cannot be empty")
-)
-
-// Add import for errors
-import "errors"

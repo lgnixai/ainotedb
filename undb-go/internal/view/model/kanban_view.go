@@ -1,15 +1,14 @@
-
 package model
 
 type KanbanView struct {
-	ViewBase
+	View
 	GroupField string                 `json:"group_field"`
 	Options    map[string]interface{} `json:"options"`
 }
 
 func NewKanbanView(name string, tableID string, groupField string) *KanbanView {
 	return &KanbanView{
-		ViewBase: ViewBase{
+		View: View{
 			ID:      GenerateID(),
 			Name:    name,
 			Type:    ViewTypeKanban,

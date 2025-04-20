@@ -1,9 +1,9 @@
-
 package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/undb-go/internal/user/service"
+
+	`github.com/undb/undb-go/internal/user/service`
 )
 
 func AuthMiddleware(authService *service.AuthService) gin.HandlerFunc {

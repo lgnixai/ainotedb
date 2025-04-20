@@ -2,11 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/undb/undb-go/internal/user/handler"
 )
 
 // RegisterUserRoutes registers all user-related routes
-func RegisterUserRoutes(r *gin.RouterGroup, handler *handler.UserHandler) {
+func RegisterRoutes(r *gin.RouterGroup, handler *handler.UserHandler) {
 	users := r.Group("/users")
 	{
 		users.POST("/register", handler.Register)

@@ -2,6 +2,7 @@ package model
 
 import (
 	"time"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -66,8 +67,8 @@ func (u *User) Validate() error {
 
 //Error definitions (assuming these are defined elsewhere, adjust as needed)
 var (
-	ErrEmptyEmail     = &Error{Code: "emptyEmail", Message: "Email cannot be empty"}
-	ErrEmptyPassword  = &Error{Code: "emptyPassword", Message: "Password cannot be empty"}
+	//ErrEmptyEmail     = &Error{Code: "emptyEmail", Message: "Email cannot be empty"}
+	//ErrEmptyPassword  = &Error{Code: "emptyPassword", Message: "Password cannot be empty"}
 	ErrEmptyUsername = &Error{Code: "emptyUsername", Message: "Username cannot be empty"}
 )
 

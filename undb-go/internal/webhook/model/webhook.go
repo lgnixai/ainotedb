@@ -9,24 +9,24 @@ import (
 )
 
 type Webhook struct {
-	ID          string                 `json:"id"`
-	Name        string                 `json:"name"`
-	URL         string                 `json:"url"`
-	Events      []string              `json:"events"`
-	Headers     map[string]string     `json:"headers"`
-	Secret      string                `json:"secret"`
-	Enabled     bool                  `json:"enabled"`
-	Conditions  map[string]any        `json:"conditions"`
-	RetryConfig RetryConfig           `json:"retryConfig"`
-	CreatedAt   time.Time             `json:"created_at"`
-	UpdatedAt   time.Time             `json:"updated_at"`
+	ID          string            `json:"id"`
+	Name        string            `json:"name"`
+	URL         string            `json:"url"`
+	Events      []string          `json:"events"`
+	Headers     map[string]string `json:"headers"`
+	Secret      string            `json:"secret"`
+	Enabled     bool              `json:"enabled"`
+	Conditions  map[string]any    `json:"conditions"`
+	RetryConfig RetryConfig       `json:"retryConfig"`
+	CreatedAt   time.Time         `json:"created_at"`
+	UpdatedAt   time.Time         `json:"updated_at"`
 }
 
 type RetryConfig struct {
-	MaxRetries  int           `json:"maxRetries"`
-	RetryDelay  time.Duration `json:"retryDelay"`
-	MaxDelay    time.Duration `json:"maxDelay"`
-	Multiplier  float64       `json:"multiplier"`
+	MaxRetries int           `json:"maxRetries"`
+	RetryDelay time.Duration `json:"retryDelay"`
+	MaxDelay   time.Duration `json:"maxDelay"`
+	Multiplier float64       `json:"multiplier"`
 }
 
 func (w *Webhook) ValidatePayload(payload []byte, signature string) bool {
@@ -52,7 +52,7 @@ func (w *Webhook) matchConditions(data map[string]any) bool {
 	return true
 }
 
-func main() {
+func main1() {
 	//Example Usage
 	webhook := Webhook{
 		ID:          "123",

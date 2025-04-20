@@ -2,11 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/undb/undb-go/internal/table/handler"
 )
 
 // RegisterTableRoutes 注册表格路由
-func RegisterTableRoutes(r *gin.RouterGroup, h *handler.TableHandler) {
+func RegisterRoutes(r *gin.RouterGroup, h *handler.TableHandler) {
 	tables := r.Group("/tables")
 	{
 		tables.POST("", h.CreateTable)

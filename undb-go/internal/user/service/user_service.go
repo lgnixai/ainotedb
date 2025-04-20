@@ -18,4 +18,6 @@ type UserService interface {
 	Update(ctx context.Context, user *model.User) error
 	// Delete deletes a user by ID
 	Delete(ctx context.Context, id string) error
+	// GetUserByEmail gets a user by email
+	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
 }

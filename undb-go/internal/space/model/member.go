@@ -1,11 +1,11 @@
-
 package model
 
 import (
 	"time"
 
-	"github.com/undb/undb-go/pkg/utils"
 	"gorm.io/gorm"
+
+	"github.com/undb/undb-go/pkg/utils"
 )
 
 // MemberRole 定义成员角色
@@ -62,3 +62,32 @@ func (m *SpaceMember) Validate() error {
 	}
 	return nil
 }
+
+// IsOwner 判断是否是空间所有者
+func (m *SpaceMember) IsOwner() bool {
+	return m.Role == RoleOwner
+}
+
+// IsAdmin 判断是否是管理员
+func (m *SpaceMember) IsAdmin() bool {
+	return m.Role == RoleAdmin
+}
+
+// CanManageMembers 判断是否可以管理成员
+func (m *SpaceMember) CanManageMembers() bool {
+	return m.IsOwner() || m.IsAdmin()
+}
+
+// CanManageSpaceSettings 判断是否可以管理空间设置  
+func (m *SpaceMember) CanManageSpaceSettings() bool {
+	return m.IsOwner() || m.IsAdmin()
+}
+
+//	if m.UserID == "" {
+//		return ErrEmptyUserID
+//	}
+//	if m.Role == "" {
+//		return ErrEmptyRole
+//	}
+//	return nil
+//}
