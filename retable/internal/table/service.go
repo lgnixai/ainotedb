@@ -54,7 +54,52 @@ func (s *TableService) DeleteTable(id string) error {
 }
 
 func (s *TableService) AddField(field *Field) error {
+	// Validate field type
+	if !isValidFieldType(field.Type) {
+		return errors.New("invalid field type")
+	}
+
+	// Check if field name exists
+	var count int64
+	if err := s.db.Model(&Field{}).Where("table_id = ? AND name = ?", field.TableID, field.Name).Count(&count).Error; err != nil {
+		return err
+	}
+	if count > 0 {
+		return errors.New("field name already exists")
+	}
+
 	return s.db.Create(field).Error
+}
+
+func (s *TableService) UpdateFieldOptions(fieldID string, options []Option) error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
+		// Delete existing options
+		if err := tx.Where("field_id = ?", fieldID).Delete(&Option{}).Error; err != nil {
+			return err
+		}
+		// Create new options
+		for _, opt := range options {
+			opt.FieldID = fieldID
+			if err := tx.Create(&opt).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func isValidFieldType(fieldType string) bool {
+	validTypes := map[string]bool{
+		"text":     true,
+		"number":   true,
+		"date":     true,
+		"boolean":  true,
+		"select":   true,
+		"file":     true,
+		"user":     true,
+		"currency": true,
+	}
+	return validTypes[fieldType]
 }
 
 func (s *TableService) UpdateField(field *Field) error {
