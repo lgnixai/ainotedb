@@ -1,20 +1,39 @@
 package model
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
 )
 
+// JSONMap 用于 GORM JSON序列化
+
+type JSONMap map[string]interface{}
+
+func (m JSONMap) Value() (driver.Value, error) {
+	return json.Marshal(m)
+}
+
+func (m *JSONMap) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to unmarshal JSONMap value: %v", value)
+	}
+	return json.Unmarshal(bytes, m)
+}
+
 // Add import for errors
 
 // Record 表示一条记录
 type Record struct {
-	ID        string                 `json:"id" gorm:"primaryKey"`
-	TableID   string                 `json:"table_id" gorm:"index"`
-	Data      map[string]interface{} `json:"data"`
-	CreatedAt time.Time              `json:"created_at"`
-	UpdatedAt time.Time              `json:"updated_at"`
+	ID        string    `json:"id" gorm:"primaryKey"`
+	TableID   string    `json:"table_id" gorm:"index"`
+	Data      JSONMap   `json:"data"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // TableName 指定表名

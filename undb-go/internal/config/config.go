@@ -13,7 +13,7 @@ type Config struct {
 
 func Load() (*Config, error) {
 	viper.SetDefault("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/undb?sslmode=disable")
-	viper.SetDefault("SERVER_PORT", "5000")
+	viper.SetDefault("SERVER_PORT", "5555")
 	viper.SetDefault("JWT_SECRET", "your-secret-key")
 	viper.SetDefault("LOG_LEVEL", "info")
 

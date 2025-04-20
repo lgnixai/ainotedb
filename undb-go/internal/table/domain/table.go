@@ -1,9 +1,7 @@
-
 package domain
 
 import (
 	"time"
-	"github.com/undb/undb-go/internal/core/domain"
 )
 
 type Table struct {

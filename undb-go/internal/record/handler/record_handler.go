@@ -12,6 +12,18 @@ type RecordHandler struct {
 	recordService service.RecordService
 }
 
+// 路由兼容方法
+func (h *RecordHandler) CreateRecord(c *gin.Context)    { h.Create(c) }
+func (h *RecordHandler) GetRecord(c *gin.Context)      { h.GetByID(c) }
+func (h *RecordHandler) UpdateRecord(c *gin.Context)   { h.Update(c) }
+func (h *RecordHandler) DeleteRecord(c *gin.Context)   { h.Delete(c) }
+func (h *RecordHandler) BatchCreateRecords(c *gin.Context)  { h.BatchCreate(c) }
+func (h *RecordHandler) BatchUpdateRecords(c *gin.Context)  { h.BatchUpdate(c) }
+func (h *RecordHandler) BatchDeleteRecords(c *gin.Context)  { h.BatchDelete(c) }
+func (h *RecordHandler) AggregateRecords(c *gin.Context)    { h.Aggregate(c) }
+func (h *RecordHandler) PivotRecords(c *gin.Context)        { h.Pivot(c) }
+func (h *RecordHandler) GetRecordsByTable(c *gin.Context)   { h.GetByTableID(c) }
+
 func NewRecordHandler(recordService service.RecordService) *RecordHandler {
 	return &RecordHandler{recordService: recordService}
 }
@@ -81,17 +93,19 @@ func (h *RecordHandler) BatchCreate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	count, err := h.recordService.BatchCreate(c.Request.Context(), req.Records)
+	// 需补充 TableID 字段，假设前端传递 table_id
+// 将 []*model.Record 转换为 []map[string]interface{}
+var recordDataList []map[string]interface{}
+for _, r := range req.Records {
+	recordDataList = append(recordDataList, r.Data)
+}
+tableID := c.Query("table_id")
+resp, err := h.recordService.BatchCreateRecords(c.Request.Context(), model.BatchCreateRecordRequest{TableID: tableID, Records: recordDataList})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Records created successfully",
-		"count":   count,
-	})
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *RecordHandler) BatchUpdate(c *gin.Context) {
@@ -100,17 +114,17 @@ func (h *RecordHandler) BatchUpdate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	count, err := h.recordService.BatchUpdate(c.Request.Context(), req.Records)
+	// 需转换为 []BatchUpdateRecordData
+var updateRecords []model.BatchUpdateRecordData
+for _, r := range req.Records {
+	updateRecords = append(updateRecords, model.BatchUpdateRecordData{ID: r.ID, Data: r.Data})
+}
+resp, err := h.recordService.BatchUpdateRecords(c.Request.Context(), model.BatchUpdateRecordRequest{Records: updateRecords})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Records updated successfully",
-		"count":   count,
-	})
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *RecordHandler) BatchDelete(c *gin.Context) {
@@ -119,17 +133,12 @@ func (h *RecordHandler) BatchDelete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	count, err := h.recordService.BatchDelete(c.Request.Context(), req.IDs)
+	resp, err := h.recordService.BatchDeleteRecords(c.Request.Context(), model.BatchDeleteRecordRequest{RecordIDs: req.IDs})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Records deleted successfully",
-		"count":   count,
-	})
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *RecordHandler) Aggregate(c *gin.Context) {
@@ -139,15 +148,18 @@ func (h *RecordHandler) Aggregate(c *gin.Context) {
 		return
 	}
 
-	result, err := h.recordService.Aggregate(c.Request.Context(), req)
+	resp, err := h.recordService.AggregateRecords(c.Request.Context(), req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"result": result,
-	})
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *RecordHandler) Pivot(c *gin.Context) {
@@ -157,13 +169,16 @@ func (h *RecordHandler) Pivot(c *gin.Context) {
 		return
 	}
 
-	result, err := h.recordService.Pivot(c.Request.Context(), req)
+	resp, err := h.recordService.PivotRecords(c.Request.Context(), req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"result": result,
-	})
+	c.JSON(http.StatusOK, resp)
 }

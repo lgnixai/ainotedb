@@ -115,9 +115,25 @@ func (s *spaceService) RemoveMember(ctx context.Context, spaceID, userID string)
 }
 
 func (s *spaceService) UpdateMemberRole(ctx context.Context, spaceID, userID string, role model.MemberRole) error {
-	return s.memberRepo.UpdateRole(ctx, spaceID, userID, role)
+	// 先查找成员
+members, err := s.memberRepo.FindBySpaceID(ctx, spaceID)
+if err != nil {
+    return err
+}
+var memberToUpdate *model.SpaceMember
+for _, m := range members {
+    if m.UserID == userID {
+        memberToUpdate = m
+        break
+    }
+}
+if memberToUpdate == nil {
+    return fmt.Errorf("member not found")
+}
+memberToUpdate.Role = role
+return s.memberRepo.Update(ctx, memberToUpdate)
 }
 
 func (s *spaceService) GetSpaceMembers(ctx context.Context, spaceID string) ([]*model.SpaceMember, error) {
-	return s.memberRepo.GetBySpaceID(ctx, spaceID)
+	return s.memberRepo.FindBySpaceID(ctx, spaceID)
 }

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql/driver"
 	"encoding/json"
 	"fmt"
 
@@ -27,16 +28,62 @@ type View struct {
 	Type    ViewType     `json:"type"`
 	TableID string       `json:"tableId"`
 	Filter  *FilterGroup `json:"filter,omitempty"`
-	Sort    []SortOption `json:"sort,omitempty"`
-	Fields  []string     `json:"fields"` // Displayed field ID list
+	Sort    SortOptionList `json:"sort,omitempty"`
+	Fields  StringSlice  `json:"fields"` // Displayed field ID list
 	Options ViewOptions  `json:"options,omitempty"`
 	Config  string       `json:"config,omitempty"` //Added Config field
 }
 
+// StringSlice 用于 GORM JSON序列化
+
+type StringSlice []string
+
+func (ss StringSlice) Value() (driver.Value, error) {
+	return json.Marshal(ss)
+}
+
+func (ss *StringSlice) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to unmarshal StringSlice value: %v", value)
+	}
+	return json.Unmarshal(bytes, ss)
+}
+
+// SortOptionList 用于 GORM JSON序列化
+
+type SortOptionList []SortOption
+
+func (sl SortOptionList) Value() (driver.Value, error) {
+	return json.Marshal(sl)
+}
+
+func (sl *SortOptionList) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to unmarshal SortOptionList value: %v", value)
+	}
+	return json.Unmarshal(bytes, sl)
+}
+
+
 // ViewOptions represents view options
+
+func (vo ViewOptions) Value() (driver.Value, error) {
+	return json.Marshal(vo)
+}
+
+func (vo *ViewOptions) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to unmarshal ViewOptions value: %v", value)
+	}
+	return json.Unmarshal(bytes, vo)
+}
+
 type ViewOptions struct {
 	// Grid view options
-	FrozenColumns []string `json:"frozenColumns,omitempty"`
+	FrozenColumns StringSlice `json:"frozenColumns,omitempty"`
 	RowHeight     int      `json:"rowHeight,omitempty"`
 
 	// Kanban view options
@@ -89,7 +136,35 @@ func (v *View) UpdateConfig(config interface{}) error {
 
 // FilterGroup struct
 type FilterGroup struct {
-	Filters []Filter `json:"filters"`
+	Filters FilterList `json:"filters"`
+}
+
+// GORM JSON序列化支持
+func (fg FilterGroup) Value() (driver.Value, error) {
+	return json.Marshal(fg)
+}
+
+func (fg *FilterGroup) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to unmarshal FilterGroup value: %v", value)
+	}
+	return json.Unmarshal(bytes, fg)
+}
+
+type FilterList []Filter
+
+// GORM JSON序列化支持
+func (fl FilterList) Value() (driver.Value, error) {
+	return json.Marshal(fl)
+}
+
+func (fl *FilterList) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to unmarshal FilterList value: %v", value)
+	}
+	return json.Unmarshal(bytes, fl)
 }
 
 // Filter struct

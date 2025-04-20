@@ -107,7 +107,7 @@ func (r *recordRepository) Aggregate(ctx context.Context, req model.AggregationR
 	}
 
 	var result interface{}
-	switch req.Function {
+	switch req.Aggregation {
 	case "count":
 		var count int64
 		err := query.Count(&count).Error
@@ -134,20 +134,22 @@ func (r *recordRepository) Aggregate(ctx context.Context, req model.AggregationR
 		result = max
 		return result, err
 	default:
-		return nil, fmt.Errorf("unsupported aggregation function: %s", req.Function)
+		return nil, fmt.Errorf("unsupported aggregation function: %s", req.Aggregation)
 	}
 }
 
 func (r *recordRepository) Pivot(ctx context.Context, req model.PivotRequest) (interface{}, error) {
 	// Implement pivot table with raw SQL
-	query := r.db.WithContext(ctx).Raw(
+	// 这里只是示例，实际 SQL 需要根据 req.Rows, req.Columns, req.Values, req.AggFunc 动态拼接
+query := r.db.WithContext(ctx).Raw(
 		`SELECT 
-			ROW_DIMENSION,
-			GROUP_CONCAT(CASE WHEN COL_DIMENSION = ? THEN MEASURE END) as PIVOT_DATA
-		FROM records 
+			?? as row_dim,
+			?? as col_dim,
+			%s(%s) as value
+		FROM records
 		WHERE table_id = ?
-		GROUP BY ROW_DIMENSION`,
-		req.ColDimension, req.TableID)
+		GROUP BY ??, ??`,
+		req.Rows[0], req.Columns[0], req.AggFunc, req.Values, req.TableID, req.Rows[0], req.Columns[0])
 
 	var results []map[string]interface{}
 	err := query.Scan(&results).Error

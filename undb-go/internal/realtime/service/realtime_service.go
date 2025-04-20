@@ -48,7 +48,10 @@ func (s *RealtimeService) Run() {
 			s.mutex.Lock()
 			if _, ok := s.clients[client]; ok {
 				delete(s.clients, client)
-				close(client.conn.UnderlyingConn().(*net.TCPConn).CloseWrite())
+				if tcpConn, ok := client.conn.UnderlyingConn().(*net.TCPConn); ok {
+    _ = tcpConn.CloseWrite()
+}
+_ = client.conn.Close()
 				log.Println("Client unregistered")
 			}
 			s.mutex.Unlock()

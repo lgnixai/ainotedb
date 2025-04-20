@@ -12,6 +12,7 @@ import (
 type ViewRepository interface {
 	Create(ctx context.Context, view *model.View) error
 	FindByID(ctx context.Context, id string) (*model.View, error)
+	GetByID(ctx context.Context, id string) (*model.View, error)
 	FindByTableID(ctx context.Context, tableID string) ([]*model.View, error)
 	Update(ctx context.Context, view *model.View) error
 	Delete(ctx context.Context, id string) error
@@ -42,8 +43,7 @@ func (r *viewRepository) Create(ctx context.Context, view *model.View) error {
 
 // FindByID gets a view by ID
 func (r *viewRepository) GetByID(ctx context.Context, id string) (*model.View, error) {
-	//TODO implement me
-	panic("implement me")
+	return r.FindByID(ctx, id)
 }
 
 // FindByTableID gets all views for a table

@@ -1,255 +1,210 @@
 # API 文档
 
+本文件整理了主要 RESTful API，包括接口说明、请求参数、示例请求、响应 JSON 结构和测试数据。
+
 ## 认证
-
-所有 API 请求都需要在 Header 中包含 `Authorization` 字段：
-
+所有 API 请求需在 Header 中包含：
 ```
 Authorization: Bearer <token>
 ```
 
+---
+
 ## 空间管理
 
 ### 创建空间
-
-```http
-POST /api/v1/spaces
-```
-
-请求体：
-
+- **URL**: `POST /api/v1/spaces`
+- **请求参数**：
 ```json
 {
-  "name": "我的空间",
-  "description": "这是一个示例空间"
+  "name": "团队空间名称",
+  "owner_id": "用户ID"
 }
 ```
-
-响应：
-
+- **返回示例**：
 ```json
 {
-  "id": "space_123",
-  "name": "我的空间",
-  "description": "这是一个示例空间",
-  "created_at": "2024-04-20T08:00:00Z",
-  "updated_at": "2024-04-20T08:00:00Z"
+  "id": "spc_1234567890",
+  "name": "团队空间名称",
+  "owner_id": "用户ID",
+  "created_at": "2025-04-21T00:00:00Z"
 }
 ```
 
 ### 获取空间列表
-
-```http
-GET /api/v1/spaces
+- **URL**: `GET /api/v1/spaces`
+- **返回示例**：
+```json
+[
+  {
+    "id": "spc_1234567890",
+    "name": "团队空间名称",
+    "owner_id": "用户ID",
+    "created_at": "2025-04-21T00:00:00Z"
+  }
+]
 ```
 
-响应：
+---
 
+## 用户管理
+
+### 用户注册
+- **URL**: `POST /api/v1/users/register`
+- **请求参数**：
 ```json
 {
-  "spaces": [
-    {
-      "id": "space_123",
-      "name": "我的空间",
-      "description": "这是一个示例空间",
-      "created_at": "2024-04-20T08:00:00Z",
-      "updated_at": "2024-04-20T08:00:00Z"
-    }
-  ]
+  "username": "testuser",
+  "password": "123456"
 }
 ```
+- **返回示例**：
+```json
+{
+  "id": "usr_001",
+  "username": "testuser"
+}
+```
+
+### 用户登录
+- **URL**: `POST /api/v1/users/login`
+- **请求参数**：
+```json
+{
+  "username": "testuser",
+  "password": "123456"
+}
+```
+- **返回示例**：
+```json
+{
+  "token": "jwt_token_string"
+}
+```
+
+---
 
 ## 表管理
 
 ### 创建表
-
-```http
-POST /api/v1/spaces/{space_id}/tables
-```
-
-请求体：
-
+- **URL**: `POST /api/v1/tables`
+- **请求参数**：
 ```json
 {
-  "name": "用户表",
-  "description": "存储用户信息"
+  "name": "客户表",
+  "space_id": "spc_1234567890"
+}
+```
+- **返回示例**：
+```json
+{
+  "id": "tbl_001",
+  "name": "客户表",
+  "space_id": "spc_1234567890",
+  "created_at": "2025-04-21T00:00:00Z"
 }
 ```
 
-响应：
-
+### 获取表信息
+- **URL**: `GET /api/v1/tables/:id`
+- **返回示例**：
 ```json
 {
-  "id": "table_123",
-  "name": "用户表",
-  "description": "存储用户信息",
-  "created_at": "2024-04-20T08:00:00Z",
-  "updated_at": "2024-04-20T08:00:00Z"
+  "id": "tbl_001",
+  "name": "客户表",
+  "space_id": "spc_1234567890",
+  "created_at": "2025-04-21T00:00:00Z"
 }
 ```
 
-### 获取表列表
-
-```http
-GET /api/v1/spaces/{space_id}/tables
-```
-
-响应：
-
-```json
-{
-  "tables": [
-    {
-      "id": "table_123",
-      "name": "用户表",
-      "description": "存储用户信息",
-      "created_at": "2024-04-20T08:00:00Z",
-      "updated_at": "2024-04-20T08:00:00Z"
-    }
-  ]
-}
-```
+---
 
 ## 字段管理
 
 ### 创建字段
-
-```http
-POST /api/v1/tables/{table_id}/fields
-```
-
-请求体：
-
+- **URL**: `POST /api/v1/fields`
+- **请求参数**：
 ```json
 {
-  "name": "用户名",
-  "type": "text",
-  "description": "用户名称",
-  "required": true,
-  "unique": true
+  "name": "客户名称",
+  "table_id": "tbl_001",
+  "type": "string"
+}
+```
+- **返回示例**：
+```json
+{
+  "id": "fld_001",
+  "name": "客户名称",
+  "table_id": "tbl_001",
+  "type": "string"
 }
 ```
 
-响应：
-
-```json
-{
-  "id": "field_123",
-  "name": "用户名",
-  "type": "text",
-  "description": "用户名称",
-  "required": true,
-  "unique": true,
-  "created_at": "2024-04-20T08:00:00Z",
-  "updated_at": "2024-04-20T08:00:00Z"
-}
-```
-
-### 获取字段列表
-
-```http
-GET /api/v1/tables/{table_id}/fields
-```
-
-响应：
-
-```json
-{
-  "fields": [
-    {
-      "id": "field_123",
-      "name": "用户名",
-      "type": "text",
-      "description": "用户名称",
-      "required": true,
-      "unique": true,
-      "created_at": "2024-04-20T08:00:00Z",
-      "updated_at": "2024-04-20T08:00:00Z"
-    }
-  ]
-}
-```
+---
 
 ## 记录管理
 
-### 创建记录
-
-```http
-POST /api/v1/tables/{table_id}/records
-```
-
-请求体：
-
+### 新增记录
+- **URL**: `POST /api/v1/records`
+- **请求参数**：
 ```json
 {
-  "fields": {
-    "username": "john_doe",
-    "email": "john@example.com",
-    "age": 30
+  "table_id": "tbl_001",
+  "data": {
+    "客户名称": "张三"
   }
 }
 ```
-
-响应：
-
+- **返回示例**：
 ```json
 {
-  "id": "record_123",
-  "fields": {
-    "username": "john_doe",
-    "email": "john@example.com",
-    "age": 30
+  "id": "rec_001",
+  "table_id": "tbl_001",
+  "data": {
+    "客户名称": "张三"
   },
-  "created_at": "2024-04-20T08:00:00Z",
-  "updated_at": "2024-04-20T08:00:00Z"
+  "created_at": "2025-04-21T00:00:00Z"
 }
 ```
 
-### 获取记录列表
-
-```http
-GET /api/v1/tables/{table_id}/records
-```
-
-响应：
-
+### 获取记录
+- **URL**: `GET /api/v1/records/:id`
+- **返回示例**：
 ```json
 {
-  "records": [
-    {
-      "id": "record_123",
-      "fields": {
-        "username": "john_doe",
-        "email": "john@example.com",
-        "age": 30
-      },
-      "created_at": "2024-04-20T08:00:00Z",
-      "updated_at": "2024-04-20T08:00:00Z"
-    }
-  ]
+  "id": "rec_001",
+  "table_id": "tbl_001",
+  "data": {
+    "客户名称": "张三"
+  },
+  "created_at": "2025-04-21T00:00:00Z"
 }
 ```
 
-## 错误响应
+---
 
-所有错误响应都遵循以下格式：
+## 附件上传
 
+### 上传文件
+- **URL**: `POST /api/v1/files`
+- **请求参数**（multipart/form-data）：
+  - file: 文件
+  - record_id: 记录ID
+  - table_id: 表ID
+- **返回示例**：
 ```json
 {
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "错误描述",
-    "details": {
-      "field": "具体错误信息"
-    }
-  }
+  "id": "file_001",
+  "name": "test.png",
+  "size": 12345,
+  "mime_type": "image/png",
+  "url": "/api/files/file_001"
 }
 ```
 
-常见错误码：
+---
 
-- `INVALID_REQUEST`: 请求参数错误
-- `UNAUTHORIZED`: 未授权
-- `FORBIDDEN`: 禁止访问
-- `NOT_FOUND`: 资源不存在
-- `INTERNAL_ERROR`: 服务器内部错误 
+（更多接口可根据 handler/router/service 代码自动补全，支持增删改查、批量、配置等）
+
+> 若需补充具体接口或返回结构，请告知接口名。

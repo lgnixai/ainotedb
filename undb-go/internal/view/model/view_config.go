@@ -12,7 +12,7 @@ type GridViewConfig struct {
 	ViewConfig
 	Sort   []SortConfig   `json:"sort"`
 	Filter []FilterConfig `json:"filter"`
-	Fields []string       `json:"fields"` // Field IDs to display
+	Fields StringSlice    `json:"fields"` // Field IDs to display
 }
 
 // KanbanViewConfig represents the configuration for kanban view

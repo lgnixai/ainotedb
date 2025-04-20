@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"crypto/hmac"
@@ -51,6 +51,8 @@ func (w *Webhook) matchConditions(data map[string]any) bool {
 	// TODO: 根据w.Conditions实现更复杂的条件判断
 	return true
 }
+
+func main() {}
 
 func main1() {
 	//Example Usage
