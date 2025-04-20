@@ -1,0 +1,81 @@
+query GetViewShareData($shareId: ID!) {
+  member {
+    role
+    user {
+      email
+      id
+      username
+    }
+  }
+
+  share(id: $shareId) {
+    enabled
+    id
+    target {
+      id
+      type
+    }
+  }
+
+  tableByShare(shareId: $shareId) {
+    id
+    name
+    forms {
+      description
+      fields
+      id
+      name
+      option {
+        backgroundColor
+      }
+      fields
+    }
+    views {
+      id
+      name
+      type
+      fields
+      aggregate
+      filter
+      color
+      sort
+      option {
+        showSystemFields
+      }
+      grid {
+        widths
+      }
+      kanban {
+        field
+      }
+      gallery {
+        field
+      }
+      calendar {
+        field
+        timeScale
+      }
+      pivot {
+        columnLabel
+        rowLabel
+        value
+        aggregate
+      }
+      widgets {
+        id
+        name
+        item
+      }
+    }
+    schema {
+      constraint
+      defaultValue
+      display
+      id
+      name
+      option
+      type
+      metadata
+    }
+  }
+}

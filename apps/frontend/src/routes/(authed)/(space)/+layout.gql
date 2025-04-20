@@ -1,0 +1,36 @@
+query GetIndexQuery {
+  space {
+    id
+    name
+    isPersonal
+    avatar
+  }
+
+  tables {
+    id
+    name
+    baseId
+
+    views {
+      id
+      name
+      type
+      isDefault
+    }
+  }
+
+  dashboards {
+    id
+    name
+    baseId
+  }
+
+  bases {
+    id
+    name
+  }
+
+  member {
+    role
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@undb/table",
+  "module": "src/index.ts",
+  "types": "src/index.d.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "type-fest": "^4.33.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@undb/base": "workspace:*",
+    "@undb/context": "workspace:*",
+    "@undb/di": "workspace:*",
+    "@undb/i18n": "workspace:*",
+    "@undb/domain": "workspace:*",
+    "@undb/formula": "workspace:*",
+    "@undb/logger": "workspace:*",
+    "@undb/space": "workspace:*",
+    "@undb/utils": "workspace:*",
+    "@undb/zod": "workspace:*",
+    "svelte-grid": "^5.1.2",
+    "date-fns": "^4.1.0",
+    "radash": "^12.1.0",
+    "ts-pattern": "^5.6.2"
+  }
+}

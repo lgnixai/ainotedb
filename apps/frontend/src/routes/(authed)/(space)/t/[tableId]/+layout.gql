@@ -1,0 +1,96 @@
+query GetTableQuery($tableId: ID!, $viewId: ID) {
+  table(id: $tableId) {
+    id
+    name
+    baseId
+    schema {
+      id
+      name
+      type
+      defaultValue
+      display
+      constraint
+      option
+      metadata
+    }
+
+    views {
+      id
+      name
+      type
+      isDefault
+      option {
+        showSystemFields
+      }
+      filter
+      color
+      sort
+      aggregate
+      fields
+
+      grid {
+        widths
+      }
+
+      kanban {
+        field
+      }
+
+      gallery {
+        field
+      }
+      calendar {
+        field
+        timeScale
+      }
+      pivot {
+        columnLabel
+        rowLabel
+        value
+        aggregate
+      }
+
+      share {
+        enabled
+        id
+      }
+
+      widgets {
+        id
+        name
+        item
+      }
+    }
+
+    forms {
+      id
+      name
+      description
+      fields
+      option {
+        backgroundColor
+        autoAddNewField
+      }
+
+      share {
+        enabled
+        id
+      }
+    }
+
+    viewData(viewId: $viewId) {
+      aggregate
+    }
+
+    rls {
+      id
+      name
+      allow
+      enabled
+      subject
+      action
+      condition
+      updateCondition
+    }
+  }
+}

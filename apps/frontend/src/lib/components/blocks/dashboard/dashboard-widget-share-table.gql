@@ -1,0 +1,33 @@
+query GetDashboardWidgetShareTable($shareId: ID!, $tableId: ID!) {
+  tableByShareDashboard(shareId: $shareId, tableId: $tableId) {
+    id
+    name
+
+    base {
+      id
+      name
+    }
+
+    schema {
+      id
+      name
+      type
+      defaultValue
+      display
+      constraint
+      option
+      metadata
+    }
+
+    views {
+      id
+      name
+      type
+      filter
+      color
+      sort
+      aggregate
+      fields
+    }
+  }
+}

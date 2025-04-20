@@ -1,0 +1,25 @@
+query GetDashboardQuery($dashboardId: ID!) {
+  dashboard(id: $dashboardId) {
+    id
+    name
+    description
+    baseId
+    spaceId
+    layout
+    widgets {
+      table {
+        id
+      }
+      widget {
+        id
+        name
+        item
+      }
+    }
+
+    share {
+      enabled
+      id
+    }
+  }
+}

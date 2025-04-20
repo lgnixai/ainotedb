@@ -1,0 +1,50 @@
+query GetFormShareData($shareId: ID!) {
+  member {
+    role
+    user {
+      email
+      id
+      username
+    }
+  }
+
+  share(id: $shareId) {
+    enabled
+    id
+    target {
+      id
+      type
+    }
+  }
+
+  tableByShare(shareId: $shareId) {
+    id
+    name
+    forms {
+      description
+      fields
+      id
+      name
+      option {
+        backgroundColor
+      }
+      fields
+    }
+    views {
+      id
+      name
+      fields
+      type
+    }
+    schema {
+      constraint
+      defaultValue
+      display
+      id
+      name
+      option
+      type
+      metadata
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "undb",
+  "version": "1.0.0-143",
+  "private": true,
+  "scripts": {
+    "build": "NODE_ENV=production bun --bun turbo build",
+    "prebuild:desktop": "run-s build move-assets",
+    "build:desktop": "NODE_ENV=production bun --cwd=apps/desktop run build:desktop",
+    "build:docker": "turbo build:docker",
+    "predev:desktop": "bun run move-assets",
+    "dev:desktop": "bun --cwd=apps/desktop run dev:desktop",
+    "dev:docker": "docker compose -f docker-compose.dev.yaml up",
+    "dev": "bun --bun turbo dev",
+    "lint": "turbo lint",
+    "studio": "drizzle-kit studio --config drizzle.sqlite.config.ts",
+    "studio:turso": "drizzle-kit studio --config drizzle.turso.config.ts",
+    "generate": "run-s generate:db migrate:deploy",
+    "generate:db": "run-p generate:db:*",
+    "generate:db:postgres": "drizzle-kit generate --config drizzle.postgres.config.ts",
+    "generate:db:mysql": "drizzle-kit generate --config drizzle.mysql.config.ts",
+    "generate:db:sqlite": "drizzle-kit generate --config drizzle.sqlite.config.ts",
+    "migrate:db": "drizzle-kit push --config drizzle.sqlite.config.ts",
+    "move-assets": "bun run ./scripts/move-assets.ts",
+    "migrate:deploy": "bun run ./scripts/migrate.ts",
+    "prepare": "husky || echo 1",
+    "clean:root": "bunx rimraf node_modules",
+    "clean:turbo": "turbo clean",
+    "clean": "run-p clean:*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "drizzle-kit": "^0.30.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.1",
+    "npm-run-all2": "^7.0.2",
+    "turbo": "^2.3.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.2.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

@@ -1,0 +1,19 @@
+query GetCreateFromShareData($shareId: ID!) {
+  space {
+    id
+    name
+  }
+
+  template(shareId: $shareId) {
+    name
+  }
+
+  spaces {
+    id
+    name
+    isPersonal
+    member {
+      role
+    }
+  }
+}

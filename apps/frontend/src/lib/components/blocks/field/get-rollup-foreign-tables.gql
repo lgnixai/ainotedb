@@ -1,0 +1,20 @@
+query GetRollupForeignTables($tableId: ID!, $fieldId: ID!) {
+  rollupForeignTables(tableId: $tableId, fieldId: $fieldId) {
+    id
+    name
+    schema {
+      id
+      name
+      type
+      constraint
+      option
+      display
+      metadata
+    }
+    views {
+      id
+      name
+      type
+    }
+  }
+}

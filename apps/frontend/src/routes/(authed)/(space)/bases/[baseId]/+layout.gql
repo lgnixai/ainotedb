@@ -1,0 +1,24 @@
+query GetBaseQuery($baseId: ID!) {
+  base(id: $baseId) {
+    id
+    name
+    option
+
+    share {
+      enabled
+      id
+    }
+
+    tables {
+      id
+      name
+    }
+
+    dashboards {
+      id
+      name
+      baseId
+      description
+    }
+  }
+}

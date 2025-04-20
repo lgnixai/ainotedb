@@ -1,0 +1,31 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local", ".env"],
+  "ui": "stream",
+  "globalEnv": ["LOG_LEVEL", "AXIOM_TOKEN", "AXIOM_DATASET", "UNDB_*", "GITHUB_*", "GOOGLE_*"],
+  "tasks": {
+    "build": {
+      "cache": false,
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "inputs": ["$TURBO_DEFAULT$", ".env"]
+    },
+    "build:docker": {
+      "cache": false,
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "inputs": ["$TURBO_DEFAULT$", ".env"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "clean": {
+      "dependsOn": ["^clean"]
+    },
+    "dev": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env"],
+      "persistent": true
+    }
+  }
+}

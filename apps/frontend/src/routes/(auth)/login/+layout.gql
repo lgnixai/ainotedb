@@ -1,0 +1,20 @@
+query GetLoginSettings {
+  settings {
+    registration {
+      enabled
+    }
+    auth {
+      otp {
+        enabled
+      }
+    }
+    oauth {
+      google {
+        enabled
+      }
+      github {
+        enabled
+      }
+    }
+  }
+}

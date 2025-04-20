@@ -1,0 +1,338 @@
+type Audit {
+  detail: JSON
+  id: ID!
+  meta: JSON
+  op: String!
+  operator: User!
+  operatorId: ID!
+  recordId: ID!
+  tableId: ID!
+  timestamp: String!
+}
+
+type AuthSetting {
+  otp: OtpSetting
+}
+
+type Base {
+  dashboards: [Dashboard]!
+  id: ID!
+  name: String!
+  option: JSON
+  share: Share
+  tables: [Table]!
+}
+
+type CalendarOption {
+  field: String
+  timeScale: CalendarTimeScale
+}
+
+enum CalendarTimeScale {
+  day
+  month
+  week
+}
+
+type Dashboard {
+  baseId: ID!
+  description: String
+  id: ID!
+  layout: JSON
+  name: String!
+  share: Share
+  spaceId: ID!
+  widgets: [DashboardWidget!]
+}
+
+type DashboardWidget {
+  table: DashboardWidgetTable!
+  widget: Widget
+}
+
+type DashboardWidgetTable {
+  id: ID
+}
+
+type Field {
+  constraint: JSON
+  defaultValue: JSON
+  display: Boolean
+  id: ID!
+  metadata: JSON
+  name: String!
+  option: JSON
+  type: FieldType!
+}
+
+enum FieldType {
+  attachment
+  autoIncrement
+  button
+  checkbox
+  createdAt
+  createdBy
+  currency
+  date
+  dateRange
+  duration
+  email
+  formula
+  id
+  json
+  longText
+  number
+  percentage
+  rating
+  reference
+  rollup
+  select
+  string
+  updatedAt
+  updatedBy
+  url
+  user
+}
+
+scalar File
+
+type Form {
+  description: String
+  fields: JSON
+  id: ID!
+  name: String!
+  option: FormOption
+  share: Share
+  shareId: ID
+}
+
+type FormOption {
+  autoAddNewField: Boolean
+  backgroundColor: String
+}
+
+type GalleryOption {
+  field: String
+}
+
+type GridOption {
+  widths: JSON
+}
+
+type Invitation {
+  email: String!
+  id: ID!
+  invitedAt: String!
+  role: SpaceRole!
+  status: InvitationStatus!
+}
+
+enum InvitationStatus {
+  accepted
+  pending
+  rejected
+}
+
+scalar JSON
+
+type KanbanOption {
+  field: String
+}
+
+type OAuthSetting {
+  enabled: Boolean!
+}
+
+type OAuthSettings {
+  github: OAuthSetting
+  google: OAuthSetting
+}
+
+type OtpSetting {
+  enabled: Boolean!
+}
+
+type PivotOption {
+  aggregate: String
+  columnLabel: String
+  rowLabel: String
+  value: String
+}
+
+type Query {
+  base(id: ID!): Base!
+  baseByShare(shareId: ID!): Base
+  bases: [Base]
+  dashboard(id: ID!): Dashboard
+  dashboardByShare(shareId: ID!): Dashboard
+  dashboards(baseId: ID): [Dashboard]!
+  invitations(status: InvitationStatus): [Invitation!]!
+  member: SpaceMember
+  memberById(id: ID!): SpaceMember
+  members(q: String): [SpaceMember]!
+  membersByIds(ids: [ID!]!): [SpaceMember!]!
+  recordAudits(recordId: ID!): [Audit]
+  rollupForeignTables(fieldId: ID!, tableId: ID!): [Table!]!
+  settings: Settings
+  share(id: ID!): Share
+  space: Space
+  spaces: [Space]!
+  table(id: ID!): Table
+  tableByShare(shareId: ID!): Table
+  tableByShareBase(shareId: ID!, tableId: ID!): Table
+  tableByShareDashboard(shareId: ID!, tableId: ID!): Table
+  tableForeignTables(tableId: ID!): [Table!]!
+  tables(baseId: ID): [Table]!
+  template(shareId: ID!): Template
+  templates: [Template!]!
+}
+
+type RLS {
+  action: RLSAction!
+  allow: Boolean!
+  condition: JSON
+  enabled: Boolean!
+  id: ID!
+  name: String!
+  subject: JSON
+  updateCondition: JSON
+}
+
+enum RLSAction {
+  create
+  delete
+  read
+  update
+}
+
+type RegistrationSetting {
+  enabled: Boolean!
+}
+
+type Settings {
+  auth: AuthSetting
+  oauth: OAuthSettings
+  registration: RegistrationSetting
+}
+
+type Share {
+  enabled: Boolean!
+  id: ID!
+  target: ShareTarget!
+}
+
+type ShareTarget {
+  id: ID!
+  type: ShareTargetType!
+}
+
+enum ShareTargetType {
+  base
+  form
+  view
+}
+
+type Space {
+  avatar: String
+  id: ID!
+  isPersonal: Boolean!
+  member: SpaceMember
+  name: String!
+}
+
+type SpaceMember {
+  role: SpaceRole!
+  spaceId: String!
+  user: User!
+}
+
+enum SpaceRole {
+  admin
+  owner
+  viewer
+}
+
+type Table {
+  base: Base!
+  baseId: String!
+  forms: [Form]
+  id: ID!
+  name: String!
+  recordsCount: Int!
+  rls: [RLS]
+  schema: [Field!]!
+  viewData(viewId: ID): ViewData
+  views: [View!]!
+}
+
+type Tempalte {
+  id: ID!
+  name: String!
+  template: TemplateVariant!
+}
+
+type Template {
+  baseId: ID!
+  name: String!
+  spaceId: ID!
+}
+
+enum TemplateType {
+  base
+}
+
+type TemplateVariant {
+  template: JSON
+  type: TemplateType!
+}
+
+type User {
+  avatar: String
+  email: String!
+  id: ID!
+  username: String!
+}
+
+type View {
+  aggregate: JSON
+  calendar: CalendarOption
+  color: JSON
+  fields: JSON
+  filter: JSON
+  gallery: GalleryOption
+  grid: GridOption
+  id: ID!
+  isDefault: Boolean
+  kanban: KanbanOption
+  name: String!
+  option: ViewOption
+  pivot: PivotOption
+  share: Share
+  shareId: ID
+  sort: JSON
+  type: ViewType!
+  widgets: [Widget]
+}
+
+type ViewData {
+  aggregate: JSON
+}
+
+type ViewOption {
+  showSystemFields: Boolean
+}
+
+enum ViewType {
+  calendar
+  gallery
+  grid
+  kanban
+  list
+  pivot
+}
+
+type Widget {
+  id: ID!
+  item: JSON
+  name: String!
+}

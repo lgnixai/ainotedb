@@ -1,0 +1,67 @@
+query GetBaseTableShareData($shareId: ID!, $tableId: ID!) {
+  share(id: $shareId) {
+    id
+    enabled
+    target {
+      id
+      type
+    }
+  }
+
+  tableByShareBase(shareId: $shareId, tableId: $tableId) {
+    id
+    name
+    forms {
+      description
+      fields
+      id
+      name
+      option {
+        backgroundColor
+      }
+      fields
+    }
+    views {
+      id
+      name
+      isDefault
+      fields
+      type
+      aggregate
+      grid {
+        widths
+      }
+      kanban {
+        field
+      }
+      gallery {
+        field
+      }
+      pivot {
+        columnLabel
+        rowLabel
+        value
+        aggregate
+      }
+      calendar {
+        field
+        timeScale
+      }
+      widgets {
+        id
+        name
+        item
+      }
+    }
+    schema {
+      constraint
+      defaultValue
+      display
+      id
+      name
+      option
+      type
+      metadata
+    }
+  }
+}

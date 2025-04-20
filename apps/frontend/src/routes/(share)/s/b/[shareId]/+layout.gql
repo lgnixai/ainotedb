@@ -1,0 +1,70 @@
+query GetShareBaseData($shareId: ID!) {
+  member {
+    role
+    user {
+      email
+      id
+      username
+    }
+  }
+
+  baseByShare(shareId: $shareId) {
+    id
+    name
+    option
+
+    tables {
+      id
+      name
+
+      forms {
+        id
+        name
+        fields
+        description
+        option {
+          backgroundColor
+        }
+      }
+
+      views {
+        id
+        name
+        type
+        isDefault
+        aggregate
+        grid {
+          widths
+        }
+        kanban {
+          field
+        }
+      calendar {
+          field
+          timeScale
+        }
+        gallery {
+          field
+        }
+      pivot {
+        columnLabel
+        rowLabel
+        value
+        aggregate
+      }
+        widgets {
+          id
+          name
+          item
+        }
+      }
+    }
+
+    dashboards {
+      id
+      name
+      description
+      baseId
+    }
+  }
+}
