@@ -18,11 +18,11 @@
 - [x] Permission management
 
 ### Space Management
-- [ ] Create space
-- [ ] Update space
-- [ ] Delete space
-- [ ] List spaces
-- [ ] Space member management
+- [x] Create space
+- [x] Update space
+- [x] Delete space
+- [x] List spaces
+- [x] Space member management
 
 ### Table Management
 - [ ] Create table
