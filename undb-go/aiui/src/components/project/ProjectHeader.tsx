@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
 import { getSpaces } from '../../lib/api'; // 引入获取spaces的API
+import { getTablesBySpaceId } from '../../lib/api';
+import { NewTableDialog } from './NewTableDialog';
+import { Select } from '../ui/Select';
 
 import { Button } from '../ui/Button';
-import { 
+import {
   Grid,
   CalendarDays,
   Layout,
@@ -22,6 +25,36 @@ export function ProjectHeader() {
   const [spaces, setSpaces] = useState<any[]>([]);
   const [loadingSpaces, setLoadingSpaces] = useState(true);
   const [error, setError] = useState('');
+
+  // 新增表相关
+  const [tables, setTables] = useState<any[]>([]);
+  const [loadingTables, setLoadingTables] = useState(false);
+  const [selectedTable, setSelectedTable] = useState<string>('');
+  const [showNewTableDialog, setShowNewTableDialog] = useState(false);
+
+  // 拉取表列表
+  const fetchTables = async (spaceId: string) => {
+    setLoadingTables(true);
+    try {
+      const data = await getTablesBySpaceId(spaceId);
+      setTables(Array.isArray(data) ? data : (data.tables || []));
+      if (Array.isArray(data) && data.length > 0) setSelectedTable(String(data[0].id));
+      else if (data.tables && data.tables.length > 0) setSelectedTable(String(data.tables[0].id));
+      else setSelectedTable('');
+    } catch (e) {
+      setTables([]);
+      setSelectedTable('');
+    } finally {
+      setLoadingTables(false);
+    }
+  };
+
+  // 当前空间变化时刷新表列表
+  useEffect(() => {
+    if (currentProject && currentProject.id) {
+      fetchTables(currentProject.id);
+    }
+  }, [currentProject]);
 
   useEffect(() => {
     async function fetchSpaces() {
@@ -62,7 +95,7 @@ export function ProjectHeader() {
                 className="border rounded px-2 py-1 text-base bg-white dark:bg-dark-bg text-text dark:text-white"
                 value={currentProject?.id || ''}
                 onChange={e => {
-                  const selected = spaces.find(s => s.id === e.target.value);
+                  const selected = spaces.find(s => String(s.id) === e.target.value);
                   if (selected) handleSpaceChange(selected);
                 }}
               >
@@ -71,17 +104,46 @@ export function ProjectHeader() {
                 ))}
               </select>
             )}
+
+            {/* 表下拉框和新建表按钮 */}
+            <div className="flex items-center space-x-2">
+              {loadingTables ? (
+                <span className="text-gray-400">表加载中...</span>
+              ) : (
+                <Select
+                  className="min-w-[120px]"
+                  value={selectedTable}
+                  onChange={e => setSelectedTable(e.target.value)}
+                  options={tables.map(table => ({ value: String(table.id), label: table.name }))}
+                  placeholder="选择表"
+                />
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-accent text-accent"
+                onClick={() => setShowNewTableDialog(true)}
+              >
+                新建表
+              </Button>
+              <NewTableDialog
+                isOpen={showNewTableDialog}
+                onClose={() => setShowNewTableDialog(false)}
+                spaceId={currentProject ? Number(currentProject.id) : 0}
+                onTableCreated={() => fetchTables(currentProject.id)}
+              />
+            </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               leftIcon={<Users size={16} />}
             >
               Team
             </Button>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -89,7 +151,7 @@ export function ProjectHeader() {
             >
               Share
             </Button>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -98,11 +160,11 @@ export function ProjectHeader() {
             </Button>
           </div>
         </div>
-        
+
         {currentProject.description && (
           <p className="text-text-secondary dark:text-gray-400 text-sm">{currentProject.description}</p>
         )}
-        
+
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
           <div className="flex space-x-2 overflow-x-auto pb-1">
             {views.map(view => (
@@ -121,13 +183,13 @@ export function ProjectHeader() {
                 {view.name}
               </button>
             ))}
-            
+
             <button className="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium text-text-secondary hover:bg-gray-100 dark:hover:bg-dark-hover dark:text-gray-300">
               <Plus size={16} className="mr-1.5" />
               New View
             </button>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
@@ -136,7 +198,7 @@ export function ProjectHeader() {
             >
               Filter
             </Button>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -144,7 +206,7 @@ export function ProjectHeader() {
             >
               Sort
             </Button>
-            
+
             <Badge variant="outline" className="text-xs">
               Created {formatDate(currentProject.createdAt)}
             </Badge>

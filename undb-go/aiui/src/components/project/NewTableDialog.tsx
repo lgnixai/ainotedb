@@ -7,11 +7,14 @@ import { createTable } from '../../lib/api';
 interface NewTableDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  spaceId: string;
+  spaceId: number | string;
   onTableCreated: () => void;
 }
 
 export function NewTableDialog({ isOpen, onClose, spaceId, onTableCreated }: NewTableDialogProps) {
+  // 保证 spaceId 为 number 类型
+  const realSpaceId = typeof spaceId === 'string' ? Number(spaceId) : spaceId;
+
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
 
@@ -21,7 +24,7 @@ export function NewTableDialog({ isOpen, onClose, spaceId, onTableCreated }: New
     e.preventDefault();
     setIsLoading(true);
     try {
-      await createTable(spaceId, name);
+      await createTable(realSpaceId, name);
       setName('');
       onTableCreated();
       onClose();

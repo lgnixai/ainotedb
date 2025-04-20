@@ -60,7 +60,7 @@ export async function login(email: string, password: string) {
     throw new Error(error.response?.data?.message || '登录失败');
   }
 }
- 
+
 // 创建团队空间（space）
 export async function createSpace({ name, description = '', visibility = 'public' }: { name: string; description?: string; visibility?: string }) {
   try {
@@ -84,7 +84,7 @@ export async function getTablesBySpaceId(spaceId: string) {
 }
 
 // 创建新表（table）
-export async function createTable(spaceId: string, name: string) {
-  const res = await api.post('/tables', { spaceId, name });
+export async function createTable(spaceId: string | number, name: string) {
+  const res = await api.post('/tables', { space_id:  (spaceId), name });
   return res.data;
 }
