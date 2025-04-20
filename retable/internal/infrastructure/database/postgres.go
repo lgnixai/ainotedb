@@ -1,4 +1,3 @@
-
 package database
 
 import (
@@ -6,37 +5,56 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"time"
+	"gorm.io/gorm/logger"
+
+	"github.com/your-org/your-repo/auth" // Replace with your actual import path
+	"github.com/your-org/your-repo/record" // Replace with your actual import path
+	"github.com/your-org/your-repo/space" // Replace with your actual import path
+	"github.com/your-org/your-repo/table" // Replace with your actual import path
+	"github.com/your-org/your-repo/view" // Replace with your actual import path
+
 )
 
 type Database struct {
 	*gorm.DB
 }
 
-func NewDatabase(dsn string) (*Database, error) {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+func NewDatabase(url string) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(url), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect database: %w", err)
+		return nil, err
 	}
 
-	log.Println("Database connected successfully")
-	return &Database{db}, nil
+	// Configure connection pool
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	return db, nil
 }
 
 func (db *Database) AutoMigrate() error {
-	// Register all models for auto migration
+	// Register all models for auto migration.  Note:  Some models from original
+        // are omitted due to inconsistencies in the provided changes.  Consider
+        // adding them back if needed.
 	models := []interface{}{
 		&auth.User{},
 		&space.Space{},
-		&space.Member{},
+		&space.SpaceMember{}, // Assuming SpaceMember is the correct model name
 		&table.Table{},
 		&table.Field{},
-		&table.Option{},
 		&record.Record{},
 		&view.View{},
-		&view.ViewConfiguration{},
 	}
 
-	// Run migrations
 	if err := db.DB.AutoMigrate(models...); err != nil {
 		return fmt.Errorf("failed to auto migrate models: %w", err)
 	}

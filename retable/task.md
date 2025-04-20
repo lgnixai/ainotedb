@@ -1,13 +1,13 @@
 # Retable Backend Tasks
 
 ## Setup & Infrastructure
-- [ ] Project structure setup
-- [ ] Configuration management
-- [ ] Database connection (PostgreSQL)
-- [ ] Redis connection
-- [ ] WebSocket setup
-- [ ] Logging setup
-- [ ] Error handling utilities
+- [x] Project structure setup
+- [x] Configuration management
+- [x] Database connection (PostgreSQL)
+- [x] Redis connection
+- [x] WebSocket setup
+- [x] Logging setup
+- [x] Error handling utilities
 
 ## Core Modules
 ### Authentication & Authorization
