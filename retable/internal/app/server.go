@@ -68,6 +68,18 @@ func (s *Server) setupRoutes() {
 			tables.POST("/:tableId/fields", s.addField)
 			tables.PUT("/fields/:id", s.updateField)
 			tables.DELETE("/fields/:id", s.deleteField)
+
+			// Record endpoints
+			tables.GET("/:tableId/records", s.listRecords)
+			tables.GET("/:tableId/records/:id", s.getRecord)
+			tables.POST("/:tableId/records", s.createRecord)
+			tables.PUT("/:tableId/records/:id", s.updateRecord)
+			tables.DELETE("/:tableId/records/:id", s.deleteRecord)
+			
+			// Bulk operations
+			tables.POST("/:tableId/records/bulk", s.bulkCreateRecords)
+			tables.PUT("/:tableId/records/bulk", s.bulkUpdateRecords)
+			tables.DELETE("/:tableId/records/bulk", s.bulkDeleteRecords)
 		}
 	}
 }
