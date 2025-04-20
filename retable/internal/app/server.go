@@ -80,6 +80,18 @@ func (s *Server) setupRoutes() {
 			tables.POST("/:tableId/records/bulk", s.bulkCreateRecords)
 			tables.PUT("/:tableId/records/bulk", s.bulkUpdateRecords)
 			tables.DELETE("/:tableId/records/bulk", s.bulkDeleteRecords)
+
+			// View endpoints
+			tables.GET("/:tableId/views", s.listViews)
+			tables.GET("/:tableId/views/:id", s.getView)
+			tables.POST("/:tableId/views", s.createView)
+			tables.PUT("/:tableId/views/:id", s.updateView)
+			tables.DELETE("/:tableId/views/:id", s.deleteView)
+			
+			// View configuration
+			tables.PUT("/:tableId/views/:id/fields", s.setViewFields)
+			tables.PUT("/:tableId/views/:id/filter", s.setViewFilter)
+			tables.PUT("/:tableId/views/:id/sort", s.setViewSort)
 		}
 	}
 }

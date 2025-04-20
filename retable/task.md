@@ -1,4 +1,3 @@
-
 # Retable Backend Tasks
 
 ## Setup & Infrastructure
@@ -49,12 +48,13 @@
 - [x] Pagination
 
 ### View Management
-- [ ] Create view
-- [ ] Update view
-- [ ] Delete view
-- [ ] View types (Grid, Kanban, etc.)
-- [ ] View filters
-- [ ] View sorting
+- [x] Create view
+- [x] Update view
+- [x] Delete view
+- [x] View configuration
+- [x] View filtering
+- [x] View sorting
+- [x] Field selection
 
 ### Real-time Features
 - [ ] WebSocket connections
