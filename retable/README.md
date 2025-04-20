@@ -1,7 +1,47 @@
-
 # Retable
 
-A modern table management system built with Go, PostgreSQL, GORM, Redis and WebSocket.
+A real-time collaborative table management system.
+
+## Features
+
+- Real-time collaboration
+- Space management
+- Table management with multiple field types
+- Record management with CRUD operations
+- View management with different display options
+- Real-time updates via WebSocket
+- Redis caching for improved performance
+- Authentication and authorization
+- API documentation
+
+## Getting Started
+
+1. Configure environment variables in `.env`
+2. Start Redis server
+3. Run `go mod download`
+4. Run `go run cmd/server/main.go`
+
+## Architecture
+
+The system follows a clean architecture pattern with:
+
+- Domain layer (core entities and business rules)
+- Application layer (use cases)
+- Infrastructure layer (external interfaces)
+- Interface layer (controllers and presenters)
+
+## Caching Strategy
+
+The system uses Redis for:
+- Record caching
+- View configuration caching
+- Session management
+- Real-time message queuing
+
+Cache invalidation is handled automatically on:
+- Record updates
+- Schema changes
+- View modifications
 
 ## Directory Structure
 ```
