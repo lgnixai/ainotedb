@@ -7,8 +7,11 @@ import (
 )
 
 // RegisterFieldRoutes 注册字段路由
+import "github.com/undb/undb-go/internal/user/middleware"
+
 func RegisterRoutes(r *gin.RouterGroup, h *handler.FieldHandler) {
 	fields := r.Group("/fields")
+	fields.Use(middleware.AuthMiddleware())
 	{
 		fields.POST("", h.CreateField)
 		fields.GET("/:id", h.GetField)

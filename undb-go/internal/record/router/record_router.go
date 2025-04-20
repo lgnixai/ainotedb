@@ -8,10 +8,13 @@ import (
 
 // RegisterRecordRoutes registers record-related routes.  Improved structure from edited code, but retains original functionality.
 
+import "github.com/undb/undb-go/internal/user/middleware"
+
 func RegisterRoutes(r *gin.RouterGroup, recordHandler *handler.RecordHandler) {
 	recordGroup := r.Group("/records")
+	recordGroup.Use(middleware.AuthMiddleware())
 	{
-		records := recordGroup.Group("") // Use nested group for better organization
+		records := recordGroup.Group("")
 		{
 			records.POST("", recordHandler.CreateRecord)
 			records.GET("/:id", recordHandler.GetRecord)
@@ -24,14 +27,7 @@ func RegisterRoutes(r *gin.RouterGroup, recordHandler *handler.RecordHandler) {
 
 			records.POST("/aggregate", recordHandler.AggregateRecords)
 			records.POST("/pivot", recordHandler.PivotRecords)
-
-			// Retain functionality for getting records by table ID using query parameter - requires modification to handler function.
-			// This is a compromise as the edited code lacks this functionality.
-			// Could consider a different route structure if the number of table-specific operations grows.
 			records.GET("", recordHandler.GetRecordsByTable)
-
 		}
 	}
-	// Separate route for getting records by table ID using path parameter, as in the original code
-	//router.GET("/api/tables/:table_id/records", recordHandler.GetRecordsByTable)
 }

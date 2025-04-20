@@ -1,8 +1,10 @@
 package model
 
 import (
+	"log"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -38,10 +40,18 @@ func (User) TableName() string {
 }
 
 // BeforeCreate is called before creating a user
+func generateUUID() string {
+	return uuid.New().String()
+}
+
 func (u *User) BeforeCreate(tx *gorm.DB) error {
+	log.Println("BeforeCreate called for user:", u.Email)
 	now := time.Now()
 	u.CreatedAt = now
 	u.UpdatedAt = now
+	if u.ID == "" {
+		u.ID = "usr_" + generateUUID()
+	}
 	return u.HashPassword() //Hash password before saving
 }
 
@@ -65,7 +75,7 @@ func (u *User) Validate() error {
 	return nil
 }
 
-//Error definitions (assuming these are defined elsewhere, adjust as needed)
+// Error definitions (assuming these are defined elsewhere, adjust as needed)
 var (
 	//ErrEmptyEmail     = &Error{Code: "emptyEmail", Message: "Email cannot be empty"}
 	//ErrEmptyPassword  = &Error{Code: "emptyPassword", Message: "Password cannot be empty"}

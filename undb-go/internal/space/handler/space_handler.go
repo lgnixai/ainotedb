@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/undb/undb-go/internal/space/model"
@@ -25,6 +26,14 @@ func (h *SpaceHandler) CreateSpace(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// 自动获取当前用户id作为owner_id
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	space.OwnerID = userID.(string)
 
 	if err := h.service.Create(c.Request.Context(), &space); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -73,7 +82,12 @@ func (h *SpaceHandler) UpdateSpace(c *gin.Context) {
 		return
 	}
 
-	space.ID = id
+	idUint, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid space id"})
+		return
+	}
+	space.ID = uint(idUint)
 	if err := h.service.Update(c.Request.Context(), &space); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

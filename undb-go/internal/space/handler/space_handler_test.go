@@ -120,16 +120,16 @@ func TestGetSpace(t *testing.T) {
 	r, mockService := setupTest()
 
 	space := &model.Space{
-		ID:          "space1",
+		ID:         3,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",
 		Visibility:  model.VisibilityPrivate,
 	}
 
-	mockService.On("GetByID", mock.Anything, "space1").Return(space, nil)
+	mockService.On("GetByID", mock.Anything, uint(3)).Return(space, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/spaces/space1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/spaces/3", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -143,14 +143,14 @@ func TestListSpaces(t *testing.T) {
 
 	spaces := []*model.Space{
 		{
-			ID:          "space1",
+			ID:         3,
 			Name:        "Test Space 1",
 			Description: "Test Description 1",
 			OwnerID:     "user1",
 			Visibility:  model.VisibilityPrivate,
 		},
 		{
-			ID:          "space2",
+			ID:         2,
 			Name:        "Test Space 2",
 			Description: "Test Description 2",
 			OwnerID:     "user1",
@@ -179,7 +179,7 @@ func TestUpdateSpace(t *testing.T) {
 	r, mockService := setupTest()
 
 	space := &model.Space{
-		ID:          "space1",
+		ID:         3,
 		Name:        "Updated Space",
 		Description: "Updated Description",
 		OwnerID:     "user1",
@@ -189,7 +189,7 @@ func TestUpdateSpace(t *testing.T) {
 	mockService.On("Update", mock.Anything, mock.AnythingOfType("*model.Space")).Return(nil)
 
 	body, _ := json.Marshal(space)
-	req := httptest.NewRequest(http.MethodPut, "/api/spaces/space1", bytes.NewBuffer(body))
+	req := httptest.NewRequest(http.MethodPut, "/api/spaces/3", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -202,9 +202,9 @@ func TestUpdateSpace(t *testing.T) {
 func TestDeleteSpace(t *testing.T) {
 	r, mockService := setupTest()
 
-	mockService.On("Delete", mock.Anything, "space1").Return(nil)
+	mockService.On("Delete", mock.Anything, uint(3)).Return(nil)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/spaces/space1", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/spaces/3", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -221,10 +221,10 @@ func TestAddMember(t *testing.T) {
 		Role:   model.RoleEditor,
 	}
 
-	mockService.On("AddMember", mock.Anything, "space1", "user2", model.RoleEditor).Return(nil)
+	mockService.On("AddMember", mock.Anything, uint(3), "user2", model.RoleEditor).Return(nil)
 
 	body, _ := json.Marshal(req)
-	httpReq := httptest.NewRequest(http.MethodPost, "/api/spaces/space1/members", bytes.NewBuffer(body))
+	httpReq := httptest.NewRequest(http.MethodPost, "/api/spaces/3/members", bytes.NewBuffer(body))
 	httpReq.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -237,9 +237,9 @@ func TestAddMember(t *testing.T) {
 func TestRemoveMember(t *testing.T) {
 	r, mockService := setupTest()
 
-	mockService.On("RemoveMember", mock.Anything, "space1", "user2").Return(nil)
+	mockService.On("RemoveMember", mock.Anything, uint(3), "user2").Return(nil)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/spaces/space1/members/user2", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/spaces/3/members/user2", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -255,10 +255,10 @@ func TestUpdateMemberRole(t *testing.T) {
 		Role: model.RoleAdmin,
 	}
 
-	mockService.On("UpdateMemberRole", mock.Anything, "space1", "user2", model.RoleAdmin).Return(nil)
+	mockService.On("UpdateMemberRole", mock.Anything, uint(3), "user2", model.RoleAdmin).Return(nil)
 
 	body, _ := json.Marshal(req)
-	httpReq := httptest.NewRequest(http.MethodPut, "/api/spaces/space1/members/user2/role", bytes.NewBuffer(body))
+	httpReq := httptest.NewRequest(http.MethodPut, "/api/spaces/3/members/user2/role", bytes.NewBuffer(body))
 	httpReq.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -274,21 +274,21 @@ func TestGetSpaceMembers(t *testing.T) {
 	members := []*model.SpaceMember{
 		{
 			ID:      "member1",
-			SpaceID: "space1",
+			SpaceID: 3,
 			UserID:  "user1",
 			Role:    model.RoleOwner,
 		},
 		{
 			ID:      "member2",
-			SpaceID: "space1",
+			SpaceID: 3,
 			UserID:  "user2",
 			Role:    model.RoleEditor,
 		},
 	}
 
-	mockService.On("GetSpaceMembers", mock.Anything, "space1").Return(members, nil)
+	mockService.On("GetSpaceMembers", mock.Anything, uint(3)).Return(members, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/spaces/space1/members", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/spaces/3/members", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)

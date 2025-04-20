@@ -7,9 +7,11 @@ import (
 )
 
 // RegisterViewRoutes 注册视图相关路由
-func RegisterRoutes(r *gin.RouterGroup, h *handler.ViewHandler) {
+import "github.com/undb/undb-go/internal/user/middleware"
 
+func RegisterRoutes(r *gin.RouterGroup, h *handler.ViewHandler) {
 	views := r.Group("/views")
+	views.Use(middleware.AuthMiddleware())
 	{
 		views.POST("", h.CreateView)
 		views.GET(":id", h.GetView)

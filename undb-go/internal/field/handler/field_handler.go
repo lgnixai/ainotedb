@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/undb/undb-go/internal/field/model"
@@ -34,8 +35,14 @@ func (h *FieldHandler) CreateField(c *gin.Context) {
 
 // GetField 获取字段
 func (h *FieldHandler) GetField(c *gin.Context) {
-	id := c.Param("id")
-	field, err := h.service.GetByID(c.Request.Context(), id)
+	idStr := c.Param("id")
+id64, err := strconv.ParseUint(idStr, 10, 64)
+if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+    return
+}
+id := uint(id64)
+field, err := h.service.GetByID(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -46,8 +53,14 @@ func (h *FieldHandler) GetField(c *gin.Context) {
 
 // GetFields 获取表的所有字段
 func (h *FieldHandler) GetFields(c *gin.Context) {
-	tableID := c.Param("table_id")
-	fields, err := h.service.GetByTableID(c.Request.Context(), tableID)
+	tableIDStr := c.Param("table_id")
+tableID64, err := strconv.ParseUint(tableIDStr, 10, 64)
+if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "invalid table_id"})
+    return
+}
+tableID := uint(tableID64)
+fields, err := h.service.GetByTableID(c.Request.Context(), tableID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,14 +71,19 @@ func (h *FieldHandler) GetFields(c *gin.Context) {
 
 // UpdateField 更新字段
 func (h *FieldHandler) UpdateField(c *gin.Context) {
-	id := c.Param("id")
 	var field model.Field
 	if err := c.ShouldBindJSON(&field); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	field.ID = id
+	idStr := c.Param("id")
+id64, err := strconv.ParseUint(idStr, 10, 64)
+if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+    return
+}
+field.ID = uint(id64)
 	if err := h.service.Update(c.Request.Context(), &field); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -76,8 +94,14 @@ func (h *FieldHandler) UpdateField(c *gin.Context) {
 
 // DeleteField 删除字段
 func (h *FieldHandler) DeleteField(c *gin.Context) {
-	id := c.Param("id")
-	if err := h.service.Delete(c.Request.Context(), id); err != nil {
+	idStr := c.Param("id")
+id64, err := strconv.ParseUint(idStr, 10, 64)
+if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+    return
+}
+id := uint(id64)
+if err := h.service.Delete(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

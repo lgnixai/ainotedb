@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/undb/undb-go/internal/field/model"
-	"github.com/undb/undb-go/internal/field/repository"
+	repository `github.com/undb/undb-go/internal/infrastructure/db`
 )
 
 // FieldService 定义字段服务接口
@@ -13,16 +13,16 @@ type FieldService interface {
 	Create(ctx context.Context, field *model.Field) error
 
 	// GetByID 根据ID获取字段
-	GetByID(ctx context.Context, id string) (*model.Field, error)
+	GetByID(ctx context.Context, id uint) (*model.Field, error)
 
 	// GetByTableID 获取表格的所有字段
-	GetByTableID(ctx context.Context, tableID string) ([]*model.Field, error)
+	GetByTableID(ctx context.Context, tableID uint) ([]*model.Field, error)
 
 	// Update 更新字段
 	Update(ctx context.Context, field *model.Field) error
 
 	// Delete 删除字段
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, id uint) error
 }
 
 // fieldService 实现字段服务接口
@@ -42,11 +42,11 @@ func (s *fieldService) Create(ctx context.Context, field *model.Field) error {
 	return s.repo.Create(ctx, field)
 }
 
-func (s *fieldService) GetByID(ctx context.Context, id string) (*model.Field, error) {
+func (s *fieldService) GetByID(ctx context.Context, id uint) (*model.Field, error) {
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *fieldService) GetByTableID(ctx context.Context, tableID string) ([]*model.Field, error) {
+func (s *fieldService) GetByTableID(ctx context.Context, tableID uint) ([]*model.Field, error) {
 	return s.repo.GetByTableID(ctx, tableID)
 }
 
@@ -57,6 +57,6 @@ func (s *fieldService) Update(ctx context.Context, field *model.Field) error {
 	return s.repo.Update(ctx, field)
 }
 
-func (s *fieldService) Delete(ctx context.Context, id string) error {
+func (s *fieldService) Delete(ctx context.Context, id uint) error {
 	return s.repo.Delete(ctx, id)
 }

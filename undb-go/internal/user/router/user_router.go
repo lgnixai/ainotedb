@@ -7,13 +7,15 @@ import (
 )
 
 // RegisterUserRoutes registers all user-related routes
+import "github.com/undb/undb-go/internal/user/middleware"
+
 func RegisterRoutes(r *gin.RouterGroup, handler *handler.UserHandler) {
-	users := r.Group("/users")
+	// 只注册需要登录的用户操作，公开路由由 main.go 注册，避免重复注册导致 panic
+	authUsers := r.Group("/users")
+	authUsers.Use(middleware.AuthMiddleware())
 	{
-		users.POST("/register", handler.Register)
-		users.POST("/login", handler.Login)
-		users.GET("/:id", handler.GetUser)
-		users.PUT("/:id", handler.UpdateUser)
-		users.DELETE("/:id", handler.DeleteUser)
+		authUsers.GET("/:id", handler.GetUser)
+		authUsers.PUT("/:id", handler.UpdateUser)
+		authUsers.DELETE("/:id", handler.DeleteUser)
 	}
 }

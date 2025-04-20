@@ -72,7 +72,7 @@ func TestCreateTable(t *testing.T) {
 	table := &model.Table{
 		Name:        "Test Table",
 		Description: "Test Description",
-		SpaceID:     "space1",
+		SpaceID:     1,
 	}
 
 	mockService.On("Create", mock.Anything, mock.AnythingOfType("*model.Table")).Return(nil)
@@ -92,15 +92,15 @@ func TestGetTable(t *testing.T) {
 	r, mockService := setupTest()
 
 	table := &model.Table{
-		ID:          "table1",
+		ID:          1,
 		Name:        "Test Table",
 		Description: "Test Description",
-		SpaceID:     "space1",
+		SpaceID:     1,
 	}
 
-	mockService.On("GetByID", mock.Anything, "table1").Return(table, nil)
+	mockService.On("GetByID", mock.Anything, 1).Return(table, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/tables/table1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/tables/1", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -114,22 +114,22 @@ func TestGetTablesBySpace(t *testing.T) {
 
 	tables := []*model.Table{
 		{
-			ID:          "table1",
+			ID:          1,
 			Name:        "Test Table 1",
 			Description: "Test Description 1",
-			SpaceID:     "space1",
+			SpaceID:     1,
 		},
 		{
-			ID:          "table2",
+			ID:          2,
 			Name:        "Test Table 2",
 			Description: "Test Description 2",
-			SpaceID:     "space1",
+			SpaceID:     1,
 		},
 	}
 
-	mockService.On("GetBySpaceID", mock.Anything, "space1").Return(tables, nil)
+	mockService.On("GetBySpaceID", mock.Anything, 1).Return(tables, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/tables/space/space1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/tables/space/1", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -142,16 +142,16 @@ func TestUpdateTable(t *testing.T) {
 	r, mockService := setupTest()
 
 	table := &model.Table{
-		ID:          "table1",
+		ID:          1,
 		Name:        "Updated Table",
 		Description: "Updated Description",
-		SpaceID:     "space1",
+		SpaceID:     1,
 	}
 
 	mockService.On("Update", mock.Anything, mock.AnythingOfType("*model.Table")).Return(nil)
 
 	body, _ := json.Marshal(table)
-	req := httptest.NewRequest(http.MethodPut, "/api/tables/table1", bytes.NewBuffer(body))
+	req := httptest.NewRequest(http.MethodPut, "/api/tables/1", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -164,9 +164,9 @@ func TestUpdateTable(t *testing.T) {
 func TestDeleteTable(t *testing.T) {
 	r, mockService := setupTest()
 
-	mockService.On("Delete", mock.Anything, "table1").Return(nil)
+	mockService.On("Delete", mock.Anything, 1).Return(nil)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/tables/table1", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/tables/1", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)

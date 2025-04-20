@@ -17,7 +17,7 @@ const (
 
 // Space 表示一个空间
 type Space struct {
-	ID          string          `gorm:"primaryKey" json:"id"`
+	ID          uint            `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string          `gorm:"not null" json:"name"`
 	Description string          `json:"description"`
 	OwnerID     string          `json:"owner_id" gorm:"index"`
@@ -33,7 +33,6 @@ func (Space) TableName() string {
 
 // BeforeCreate 创建前的钩子
 func (s *Space) BeforeCreate(tx *gorm.DB) error {
-	s.ID = utils.GenerateID("space")
 	s.CreatedAt = utils.Now()
 	s.UpdatedAt = utils.Now()
 	return nil

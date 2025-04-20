@@ -70,7 +70,7 @@ func TestCreateRecord(t *testing.T) {
 	r, mockService := setupTest()
 
 	record := &model.Record{
-		TableID: "table1",
+		TableID: 1,
 		Data: map[string]interface{}{
 			"name": "Test Record",
 			"age":  25,
@@ -95,16 +95,16 @@ func TestGetRecord(t *testing.T) {
 
 	record := &model.Record{
 		ID:      "record1",
-		TableID: "table1",
+		TableID: 1,
 		Data: map[string]interface{}{
 			"name": "Test Record",
 			"age":  25,
 		},
 	}
 
-	mockService.On("GetByID", mock.Anything, "record1").Return(record, nil)
+	mockService.On("GetByID", mock.Anything, 1).Return(record, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/records/record1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/records/1", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -118,16 +118,16 @@ func TestGetRecordsByTable(t *testing.T) {
 
 	records := []*model.Record{
 		{
-			ID:      "record1",
-			TableID: "table1",
+			ID:      1,
+			TableID: 1,
 			Data: map[string]interface{}{
 				"name": "Test Record 1",
 				"age":  25,
 			},
 		},
 		{
-			ID:      "record2",
-			TableID: "table1",
+			ID:      2,
+			TableID: 1,
 			Data: map[string]interface{}{
 				"name": "Test Record 2",
 				"age":  30,
@@ -135,9 +135,9 @@ func TestGetRecordsByTable(t *testing.T) {
 		},
 	}
 
-	mockService.On("GetByTableID", mock.Anything, "table1").Return(records, nil)
+	mockService.On("GetByTableID", mock.Anything, 1).Return(records, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/records/table/table1", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/records/table/1", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -150,8 +150,8 @@ func TestUpdateRecord(t *testing.T) {
 	r, mockService := setupTest()
 
 	record := &model.Record{
-		ID:      "record1",
-		TableID: "table1",
+		ID:      1,
+		TableID: 1,
 		Data: map[string]interface{}{
 			"name": "Updated Record",
 			"age":  35,
@@ -161,7 +161,7 @@ func TestUpdateRecord(t *testing.T) {
 	mockService.On("Update", mock.Anything, mock.AnythingOfType("*model.Record")).Return(nil)
 
 	body, _ := json.Marshal(record)
-	req := httptest.NewRequest(http.MethodPut, "/api/records/record1", bytes.NewBuffer(body))
+	req := httptest.NewRequest(http.MethodPut, "/api/records/1", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -174,9 +174,9 @@ func TestUpdateRecord(t *testing.T) {
 func TestDeleteRecord(t *testing.T) {
 	r, mockService := setupTest()
 
-	mockService.On("Delete", mock.Anything, "record1").Return(nil)
+	mockService.On("Delete", mock.Anything, 1).Return(nil)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/records/record1", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/records/1", nil)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)

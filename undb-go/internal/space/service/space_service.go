@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
+	"strconv"
 	"fmt"
 
 	"gorm.io/gorm"
 
+	db "github.com/undb/undb-go/internal/infrastructure/db"
 	"github.com/undb/undb-go/internal/space/model"
-	"github.com/undb/undb-go/internal/space/repository"
 	"github.com/undb/undb-go/pkg/utils"
 )
 
@@ -37,13 +38,13 @@ type SpaceService interface {
 
 // spaceService 实现空间服务接口
 type spaceService struct {
-	spaceRepo  repository.SpaceRepository
-	memberRepo repository.MemberRepository
+	spaceRepo  db.SpaceRepository
+	memberRepo db.MemberRepository
 	db         *gorm.DB
 }
 
 // NewSpaceService 创建新的空间服务实例
-func NewSpaceService(spaceRepo repository.SpaceRepository, memberRepo repository.MemberRepository, db *gorm.DB) SpaceService {
+func NewSpaceService(spaceRepo db.SpaceRepository, memberRepo db.MemberRepository, db *gorm.DB) SpaceService {
 	return &spaceService{
 		spaceRepo:  spaceRepo,
 		memberRepo: memberRepo,
@@ -64,7 +65,7 @@ func (s *spaceService) Create(ctx context.Context, space *model.Space) error {
 	// 自动添加创建者为所有者
 	member := &model.SpaceMember{
 		ID:      utils.GenerateID("mem"),
-		SpaceID: space.ID,
+		SpaceID: strconv.FormatUint(uint64(space.ID), 10),
 		UserID:  space.OwnerID,
 		Role:    model.RoleOwner,
 	}
@@ -116,22 +117,22 @@ func (s *spaceService) RemoveMember(ctx context.Context, spaceID, userID string)
 
 func (s *spaceService) UpdateMemberRole(ctx context.Context, spaceID, userID string, role model.MemberRole) error {
 	// 先查找成员
-members, err := s.memberRepo.FindBySpaceID(ctx, spaceID)
-if err != nil {
-    return err
-}
-var memberToUpdate *model.SpaceMember
-for _, m := range members {
-    if m.UserID == userID {
-        memberToUpdate = m
-        break
-    }
-}
-if memberToUpdate == nil {
-    return fmt.Errorf("member not found")
-}
-memberToUpdate.Role = role
-return s.memberRepo.Update(ctx, memberToUpdate)
+	members, err := s.memberRepo.FindBySpaceID(ctx, spaceID)
+	if err != nil {
+		return err
+	}
+	var memberToUpdate *model.SpaceMember
+	for _, m := range members {
+		if m.UserID == userID {
+			memberToUpdate = m
+			break
+		}
+	}
+	if memberToUpdate == nil {
+		return fmt.Errorf("member not found")
+	}
+	memberToUpdate.Role = role
+	return s.memberRepo.Update(ctx, memberToUpdate)
 }
 
 func (s *spaceService) GetSpaceMembers(ctx context.Context, spaceID string) ([]*model.SpaceMember, error) {

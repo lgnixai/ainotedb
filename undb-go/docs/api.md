@@ -18,7 +18,8 @@ Authorization: Bearer <token>
 ```json
 {
   "name": "团队空间名称",
-  "owner_id": "用户ID"
+  "owner_id": "用户ID",
+  "visibility":"public"
 }
 ```
 - **返回示例**：
@@ -55,7 +56,9 @@ Authorization: Bearer <token>
 ```json
 {
   "username": "testuser",
-  "password": "123456"
+  "password": "123456",
+  "email": "test@example.com",
+  "name": "测试用户"
 }
 ```
 - **返回示例**：
@@ -71,14 +74,22 @@ Authorization: Bearer <token>
 - **请求参数**：
 ```json
 {
-  "username": "testuser",
+  "email": "test@example.com",
   "password": "123456"
 }
 ```
 - **返回示例**：
 ```json
 {
-  "token": "jwt_token_string"
+  "id": "usr_001",
+  "email": "test@example.com",
+  "name": "测试用户"
+}
+```
+- **失败示例**：
+```json
+{
+  "error": "invalid email or password"
 }
 ```
 

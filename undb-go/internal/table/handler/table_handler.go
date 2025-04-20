@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/undb/undb-go/internal/table/model"
@@ -43,7 +44,13 @@ func (h *TableHandler) CreateTable(c *gin.Context) {
 
 // GetTable 获取表
 func (h *TableHandler) GetTable(c *gin.Context) {
-	id := c.Param("id")
+	idStr := c.Param("id")
+	id64, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+	id := uint(id64)
 	table, err := h.service.GetByID(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -55,7 +62,13 @@ func (h *TableHandler) GetTable(c *gin.Context) {
 
 // GetTables 获取空间的所有表
 func (h *TableHandler) GetTables(c *gin.Context) {
-	spaceID := c.Param("space_id")
+	spaceIDStr := c.Param("space_id")
+	spaceID64, err := strconv.ParseUint(spaceIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid space_id"})
+		return
+	}
+	spaceID := uint(spaceID64)
 	tables, err := h.service.GetBySpaceID(c.Request.Context(), spaceID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -67,8 +80,14 @@ func (h *TableHandler) GetTables(c *gin.Context) {
 
 // GetTablesBySpace 获取空间下的所有表格
 func (h *TableHandler) GetTablesBySpace(c *gin.Context) {
-	spaceID := c.Param("space_id")
-	if spaceID == "" {
+	spaceIDStr := c.Param("space_id")
+	spaceID64, err := strconv.ParseUint(spaceIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid space_id"})
+		return
+	}
+	spaceID := uint(spaceID64)
+	if spaceID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "space_id is required"})
 		return
 	}
@@ -90,7 +109,13 @@ type UpdateTableRequest struct {
 
 // UpdateTable 更新表
 func (h *TableHandler) UpdateTable(c *gin.Context) {
-	id := c.Param("id")
+	idStr := c.Param("id")
+	id64, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+	id := uint(id64)
 	var table model.Table
 	if err := c.ShouldBindJSON(&table); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -108,7 +133,13 @@ func (h *TableHandler) UpdateTable(c *gin.Context) {
 
 // DeleteTable 删除表
 func (h *TableHandler) DeleteTable(c *gin.Context) {
-	id := c.Param("id")
+	idStr := c.Param("id")
+	id64, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+	id := uint(id64)
 	if err := h.service.Delete(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

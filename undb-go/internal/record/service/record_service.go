@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"log"
 	"sync"
-
-	"github.com/google/uuid"
-	"github.com/undb/undb-go/internal/record/model"
-	"github.com/undb/undb-go/internal/record/repository"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/undb/undb-go/internal/infrastructure/db"
+	"github.com/undb/undb-go/internal/record/model"
 )
 
 // RecordService 定义记录服务接口
@@ -56,8 +55,8 @@ func NewRecordService(repo repository.RecordRepository) RecordService {
 }
 
 func (s *recordService) Create(ctx context.Context, record *model.Record) error {
-	if record.ID == "" {
-		record.ID = uuid.NewString() // Assign UUID if not provided
+	if record.ID == 0 {
+		 // Assign UUID if not provided
 	}
 	if err := record.Validate(); err != nil {
 		return err
@@ -89,7 +88,7 @@ func (s *recordService) BatchCreateRecords(ctx context.Context, req model.BatchC
 	var (
 		successCount int
 		failedCount  int
-		createdIDs   []string
+		createdIDs   []uint
 		errors       []string
 		mu           sync.Mutex
 		eg, childCtx = errgroup.WithContext(ctx)
@@ -101,7 +100,6 @@ func (s *recordService) BatchCreateRecords(ctx context.Context, req model.BatchC
 		data := recordData // Capture loop variable
 		eg.Go(func() error {
 			record := &model.Record{
-				ID:      uuid.NewString(), // Generate new ID for each record
 				TableID: req.TableID,
 				Data:    data,
 			}

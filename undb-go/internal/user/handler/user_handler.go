@@ -2,10 +2,12 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/undb/undb-go/internal/user/model"
 	"github.com/undb/undb-go/internal/user/service"
+	"github.com/undb/undb-go/internal/user/util"
 )
 
 // UserHandler handles HTTP requests for users
@@ -75,7 +77,17 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	// 生成 JWT token
+	token, err := util.GenerateToken(user.ID, 24*time.Hour)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate token"})
+		return
+	}
+	c.Header("Authorization", "Bearer "+token)
+	c.JSON(http.StatusOK, gin.H{
+		"user": user,
+		"token": token,
+	})
 }
 
 // GetUser handles getting a user by ID

@@ -39,8 +39,8 @@ type FieldOptions struct {
 
 // Field represents a field
 type Field struct {
-	ID          string       `json:"id" gorm:"primaryKey"`
-	TableID     string       `json:"table_id" gorm:"index"`
+	ID          uint         `json:"id" gorm:"primaryKey;autoIncrement"`
+	TableID     uint         `json:"table_id" gorm:"index"`
 	Name        string       `json:"name"`
 	Type        FieldType    `json:"type"`
 	Description string       `json:"description"`

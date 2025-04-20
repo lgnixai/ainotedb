@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/undb/undb-go/internal/record/model"
@@ -99,8 +100,13 @@ var recordDataList []map[string]interface{}
 for _, r := range req.Records {
 	recordDataList = append(recordDataList, r.Data)
 }
-tableID := c.Query("table_id")
-resp, err := h.recordService.BatchCreateRecords(c.Request.Context(), model.BatchCreateRecordRequest{TableID: tableID, Records: recordDataList})
+tableIDStr := c.Query("table_id")
+tableID, err := strconv.ParseUint(tableIDStr, 10, 64)
+if err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": "invalid table_id"})
+    return
+}
+resp, err := h.recordService.BatchCreateRecords(c.Request.Context(), model.BatchCreateRecordRequest{TableID: uint(tableID), Records: recordDataList})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -117,7 +123,7 @@ func (h *RecordHandler) BatchUpdate(c *gin.Context) {
 	// 需转换为 []BatchUpdateRecordData
 var updateRecords []model.BatchUpdateRecordData
 for _, r := range req.Records {
-	updateRecords = append(updateRecords, model.BatchUpdateRecordData{ID: r.ID, Data: r.Data})
+	updateRecords = append(updateRecords, model.BatchUpdateRecordData{ID: strconv.FormatUint(uint64(r.ID), 10), Data: r.Data})
 }
 resp, err := h.recordService.BatchUpdateRecords(c.Request.Context(), model.BatchUpdateRecordRequest{Records: updateRecords})
 	if err != nil {

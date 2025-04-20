@@ -29,8 +29,8 @@ func (m *JSONMap) Scan(value interface{}) error {
 
 // Record 表示一条记录
 type Record struct {
-	ID        string    `json:"id" gorm:"primaryKey"`
-	TableID   string    `json:"table_id" gorm:"index"`
+	ID        uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	TableID   uint      `json:"table_id" gorm:"index"`
 	Data      JSONMap   `json:"data"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -57,7 +57,7 @@ func (r *Record) BeforeUpdate(tx *gorm.DB) error {
 
 // Validate 验证记录数据
 func (r *Record) Validate() error {
-	if r.TableID == "" {
+	if r.TableID == 0 {
 		return ErrEmptyTableID
 	}
 	// Allow empty data for updates, but maybe not for creates?
@@ -71,7 +71,7 @@ func (r *Record) Validate() error {
 
 // BatchCreateRecordRequest 定义批量创建记录的请求结构
 type BatchCreateRecordRequest struct {
-	TableID string                   `json:"table_id" binding:"required"`
+	TableID uint                     `json:"table_id" binding:"required"`
 	Records []map[string]interface{} `json:"records" binding:"required,min=1"` // Array of record data objects
 }
 
@@ -79,7 +79,7 @@ type BatchCreateRecordRequest struct {
 type BatchCreateRecordResponse struct {
 	SuccessCount int      `json:"success_count"`
 	FailedCount  int      `json:"failed_count"`
-	CreatedIDs   []string `json:"created_ids"`      // IDs of successfully created records
+	CreatedIDs   []uint   `json:"created_ids"`      // IDs of successfully created records
 	Errors       []string `json:"errors,omitempty"` // Optional: Detailed errors for failed creations
 }
 

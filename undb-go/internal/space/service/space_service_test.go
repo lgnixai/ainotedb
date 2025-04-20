@@ -30,7 +30,7 @@ func TestSpaceService_Create(t *testing.T) {
 	service := NewSpaceService(spaceRepo, memberRepo, db)
 
 	space := &model.Space{
-		ID:          utils.GenerateID("spc_"),
+		ID:          1,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",
@@ -61,7 +61,7 @@ func TestSpaceService_GetByID(t *testing.T) {
 
 	// 创建测试数据
 	space := &model.Space{
-		ID:          utils.GenerateID("spc_"),
+		ID:          1,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",
@@ -79,7 +79,7 @@ func TestSpaceService_GetByID(t *testing.T) {
 	assert.Equal(t, space.Visibility, found.Visibility)
 
 	// 测试获取不存在的空间
-	_, err = service.GetByID(context.Background(), "non-existent")
+	_, err = service.GetByID(context.Background(), 2)
 	assert.Error(t, err)
 }
 
@@ -92,21 +92,21 @@ func TestSpaceService_GetByOwnerID(t *testing.T) {
 	// 创建测试数据
 	spaces := []*model.Space{
 		{
-			ID:          utils.GenerateID("spc_"),
+			ID:          1,
 			Name:        "Space 1",
 			Description: "Description 1",
 			OwnerID:     "user1",
 			Visibility:  model.VisibilityPrivate,
 		},
 		{
-			ID:          utils.GenerateID("spc_"),
+			ID:          2,
 			Name:        "Space 2",
 			Description: "Description 2",
 			OwnerID:     "user1",
 			Visibility:  model.VisibilityPrivate,
 		},
 		{
-			ID:          utils.GenerateID("spc_"),
+			ID:          3,
 			Name:        "Space 3",
 			Description: "Description 3",
 			OwnerID:     "user2",
@@ -143,7 +143,7 @@ func TestSpaceService_Update(t *testing.T) {
 
 	// 创建测试数据
 	space := &model.Space{
-		ID:          utils.GenerateID("spc_"),
+		ID:          1,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",
@@ -174,7 +174,7 @@ func TestSpaceService_Delete(t *testing.T) {
 
 	// 创建测试数据
 	space := &model.Space{
-		ID:          utils.GenerateID("spc_"),
+		ID:          1,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",

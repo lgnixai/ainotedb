@@ -4,11 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/undb/undb-go/internal/space/handler"
+	`github.com/undb/undb-go/internal/user/middleware`
 )
 
 // RegisterSpaceRoutes 注册空间路由
 func RegisterRoutes(r *gin.RouterGroup, h *handler.SpaceHandler) {
 	spaces := r.Group("/spaces")
+	spaces.Use(middleware.AuthMiddleware())
+
 	{
 		spaces.POST("", h.CreateSpace)
 		spaces.GET("", h.ListSpaces)

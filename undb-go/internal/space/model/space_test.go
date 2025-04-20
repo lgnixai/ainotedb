@@ -17,7 +17,7 @@ func TestSpace_Validate(t *testing.T) {
 		{
 			name: "valid space",
 			space: &Space{
-				ID:          utils.GenerateID("spc_"),
+				ID:          1,
 				Name:        "Test Space",
 				Description: "Test Description",
 				OwnerID:     "user1",
@@ -28,7 +28,7 @@ func TestSpace_Validate(t *testing.T) {
 		{
 			name: "empty name",
 			space: &Space{
-				ID:          utils.GenerateID("spc_"),
+				ID:          1,
 				Name:        "",
 				Description: "Test Description",
 				OwnerID:     "user1",
@@ -39,7 +39,7 @@ func TestSpace_Validate(t *testing.T) {
 		{
 			name: "empty owner id",
 			space: &Space{
-				ID:          utils.GenerateID("spc_"),
+				ID:          1,
 				Name:        "Test Space",
 				Description: "Test Description",
 				OwnerID:     "",
@@ -50,7 +50,7 @@ func TestSpace_Validate(t *testing.T) {
 		{
 			name: "invalid visibility",
 			space: &Space{
-				ID:          utils.GenerateID("spc_"),
+				ID:          1,
 				Name:        "Test Space",
 				Description: "Test Description",
 				OwnerID:     "user1",
@@ -70,7 +70,7 @@ func TestSpace_Validate(t *testing.T) {
 
 func TestSpace_BeforeCreate(t *testing.T) {
 	space := &Space{
-		ID:          utils.GenerateID("spc_"),
+		ID:          1,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",
@@ -85,7 +85,7 @@ func TestSpace_BeforeCreate(t *testing.T) {
 
 func TestSpace_BeforeUpdate(t *testing.T) {
 	space := &Space{
-		ID:          utils.GenerateID("spc_"),
+		ID:          1,
 		Name:        "Test Space",
 		Description: "Test Description",
 		OwnerID:     "user1",

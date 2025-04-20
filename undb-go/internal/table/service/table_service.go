@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
+	repository `github.com/undb/undb-go/internal/infrastructure/db`
 	"github.com/undb/undb-go/internal/table/model"
-	"github.com/undb/undb-go/internal/table/repository"
 )
 
 // TableService 定义表格服务接口
@@ -13,16 +13,16 @@ type TableService interface {
 	Create(ctx context.Context, table *model.Table) error
 
 	// GetByID 根据ID获取表格
-	GetByID(ctx context.Context, id string) (*model.Table, error)
+	GetByID(ctx context.Context, id uint) (*model.Table, error)
 
 	// GetBySpaceID 获取空间的所有表格
-	GetBySpaceID(ctx context.Context, spaceID string) ([]*model.Table, error)
+	GetBySpaceID(ctx context.Context, spaceID uint) ([]*model.Table, error)
 
 	// Update 更新表格
 	Update(ctx context.Context, table *model.Table) error
 
 	// Delete 删除表格
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, id uint) error
 }
 
 // tableService 实现表格服务接口
@@ -42,11 +42,11 @@ func (s *tableService) Create(ctx context.Context, table *model.Table) error {
 	return s.repo.Create(ctx, table)
 }
 
-func (s *tableService) GetByID(ctx context.Context, id string) (*model.Table, error) {
+func (s *tableService) GetByID(ctx context.Context, id uint) (*model.Table, error) {
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *tableService) GetBySpaceID(ctx context.Context, spaceID string) ([]*model.Table, error) {
+func (s *tableService) GetBySpaceID(ctx context.Context, spaceID uint) ([]*model.Table, error) {
 	return s.repo.GetBySpaceID(ctx, spaceID)
 }
 
@@ -57,6 +57,6 @@ func (s *tableService) Update(ctx context.Context, table *model.Table) error {
 	return s.repo.Update(ctx, table)
 }
 
-func (s *tableService) Delete(ctx context.Context, id string) error {
+func (s *tableService) Delete(ctx context.Context, id uint) error {
 	return s.repo.Delete(ctx, id)
 }

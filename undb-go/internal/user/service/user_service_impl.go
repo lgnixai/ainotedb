@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/undb/undb-go/internal/user/model"
 	"github.com/undb/undb-go/internal/user/repository"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // userService implements UserService
@@ -21,6 +22,7 @@ func NewUserService(repo repository.UserRepository) UserService {
 
 // Register registers a new user
 func (s *userService) Register(ctx context.Context, user *model.User) error {
+
 	// Check if user already exists
 	_, err := s.repo.GetByEmail(ctx, user.Email)
 	if err == nil {
@@ -29,16 +31,9 @@ func (s *userService) Register(ctx context.Context, user *model.User) error {
 	if !errors.Is(err, model.ErrUserNotFound) {
 		return err
 	}
-
-	// Hash password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-	user.Password = string(hashedPassword)
-
-	// Create user
+	// 不要再手动 hash 密码了，直接保存
 	return s.repo.Create(ctx, user)
+
 }
 
 // Login logs in a user

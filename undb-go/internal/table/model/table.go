@@ -8,8 +8,8 @@ import (
 
 // Table 表示一个表格
 type Table struct {
-	ID          string    `json:"id" gorm:"primaryKey"`
-	SpaceID     string    `json:"space_id" gorm:"index"`
+	ID          uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	SpaceID     uint      `json:"space_id" gorm:"index"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -39,7 +39,7 @@ func (t *Table) Validate() error {
 	if t.Name == "" {
 		return ErrEmptyTableName
 	}
-	if t.SpaceID == "" {
+	if t.SpaceID == 0 {
 		return ErrEmptySpaceID
 	}
 	return nil

@@ -6,7 +6,7 @@ import (
 	"log"
 
 	`github.com/undb/undb-go/internal/view/model`
-	`github.com/undb/undb-go/internal/view/repository`
+	db "github.com/undb/undb-go/internal/infrastructure/db"
 )
 
 // ViewService defines operations for managing views
@@ -20,11 +20,11 @@ type ViewService interface {
 }
 
 type viewServiceImpl struct {
-	repo repository.ViewRepository
+	repo db.ViewRepository
 }
 
 // NewViewService creates a new view service instance
-func NewViewService(repo repository.ViewRepository) ViewService {
+func NewViewService(repo db.ViewRepository) ViewService {
 	return &viewServiceImpl{
 		repo: repo,
 	}
