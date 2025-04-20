@@ -1,9 +1,11 @@
 package service
 
 import (
+	"encoding/json"
 	"log"
 	"net"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -78,9 +80,38 @@ func (s *RealtimeService) UnregisterClient(client *Client) {
 	s.unregister <- client
 }
 
-// BroadcastMessage sends a message to all connected clients.
-func (s *RealtimeService) BroadcastMessage(message []byte) {
+
+type Operation struct {
+	Type      string          `json:"type"`      // insert, update, delete
+	TableID   string          `json:"tableId"`
+	RecordID  string          `json:"recordId"`
+	UserID    string          `json:"userId"`
+	Timestamp time.Time       `json:"timestamp"`
+	Data      map[string]any  `json:"data"`
+}
+
+func (s *RealtimeService) BroadcastOperation(op Operation) {
+	message, err := json.Marshal(op)
+	if err != nil {
+		log.Printf("Failed to marshal operation: %v", err)
+		return
+	}
+
+	// 记录操作历史
+	s.mutex.Lock()
+	// TODO: 实现操作历史存储
+	s.mutex.Unlock()
+
+	// 广播给所有客户端
 	s.broadcast <- message
+}
+
+func (s *RealtimeService) HandleConflict(op1, op2 Operation) Operation {
+	// 使用OT算法处理冲突
+	if op1.Timestamp.Before(op2.Timestamp) {
+		return op2
+	}
+	return op1
 }
 
 // TODO: Add methods for handling specific events (e.g., record updates)
