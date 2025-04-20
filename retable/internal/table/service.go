@@ -1,7 +1,9 @@
 package table
 
 import (
+	"context"
 	"errors"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -11,6 +13,54 @@ type TableService struct {
 
 func NewTableService(db *gorm.DB) *TableService {
 	return &TableService{db: db}
+}
+
+func (s *TableService) CreateTable(ctx context.Context, table *Table) error {
+	if table.ID == "" {
+		table.ID = uuid.New().String()
+	}
+
+	return s.db.WithContext(ctx).Create(table).Error
+}
+
+func (s *TableService) GetTable(ctx context.Context, id string) (*Table, error) {
+	var table Table
+	if err := s.db.WithContext(ctx).Preload("Schema").First(&table, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &table, nil
+}
+
+func (s *TableService) ListTables(ctx context.Context, spaceID string) ([]Table, error) {
+	var tables []Table
+	if err := s.db.WithContext(ctx).Where("space_id = ?", spaceID).Find(&tables).Error; err != nil {
+		return nil, err
+	}
+	return tables, nil
+}
+
+func (s *TableService) UpdateTable(ctx context.Context, table *Table) error {
+	if table.ID == "" {
+		return errors.New("table ID is required")
+	}
+	
+	return s.db.WithContext(ctx).Save(table).Error
+}
+
+func (s *TableService) DeleteTable(ctx context.Context, id string) error {
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// Delete fields
+		if err := tx.WithContext(ctx).Where("table_id = ?", id).Delete(&Field{}).Error; err != nil {
+			return err
+		}
+		
+		// Delete table
+		if err := tx.WithContext(ctx).Delete(&Table{}, "id = ?", id).Error; err != nil {
+			return err
+		}
+		
+		return nil
+	})
 }
 
 func (s *TableService) CreateTable(table *Table) error {

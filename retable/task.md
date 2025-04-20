@@ -25,11 +25,11 @@
 - [x] Space member management
 
 ### Table Management
-- [ ] Create table
-- [ ] Update table schema
-- [ ] Delete table
-- [ ] List tables
-- [ ] Table permissions
+- [x] Create table
+- [x] Update table schema
+- [x] Delete table
+- [x] List tables
+- [x] Table permissions
 
 ### Field Management
 - [ ] Field type definitions
