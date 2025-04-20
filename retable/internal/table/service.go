@@ -43,7 +43,7 @@ func (s *TableService) UpdateTable(ctx context.Context, table *Table) error {
 	if table.ID == "" {
 		return errors.New("table ID is required")
 	}
-	
+
 	return s.db.WithContext(ctx).Save(table).Error
 }
 
@@ -53,54 +53,61 @@ func (s *TableService) DeleteTable(ctx context.Context, id string) error {
 		if err := tx.WithContext(ctx).Where("table_id = ?", id).Delete(&Field{}).Error; err != nil {
 			return err
 		}
-		
+
 		// Delete table
 		if err := tx.WithContext(ctx).Delete(&Table{}, "id = ?", id).Error; err != nil {
 			return err
 		}
-		
+
 		return nil
 	})
 }
 
-func (s *TableService) CreateTable(table *Table) error {
-	return s.db.Create(table).Error
+// Field Management
+func (s *TableService) CreateField(ctx context.Context, field *Field) error {
+	if field.ID == "" {
+		field.ID = uuid.New().String()
+	}
+
+	return s.db.WithContext(ctx).Create(field).Error
 }
 
-func (s *TableService) GetTable(id string) (*Table, error) {
-	var table Table
-	if err := s.db.Preload("Schema").Preload("Schema.Options").First(&table, "id = ?", id).Error; err != nil {
+func (s *TableService) GetField(ctx context.Context, id string) (*Field, error) {
+	var field Field
+	if err := s.db.WithContext(ctx).First(&field, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
-	return &table, nil
+	return &field, nil
 }
 
-func (s *TableService) ListTables(spaceID string) ([]Table, error) {
-	var tables []Table
-	if err := s.db.Where("space_id = ?", spaceID).Find(&tables).Error; err != nil {
+func (s *TableService) UpdateField(ctx context.Context, field *Field) error {
+	if field.ID == "" {
+		return errors.New("field ID is required")
+	}
+
+	return s.db.WithContext(ctx).Save(field).Error
+}
+
+func (s *TableService) DeleteField(ctx context.Context, id string) error {
+	return s.db.WithContext(ctx).Delete(&Field{}, "id = ?", id).Error
+}
+
+func (s *TableService) ListFields(ctx context.Context, tableID string) ([]Field, error) {
+	var fields []Field
+	if err := s.db.WithContext(ctx).Where("table_id = ?", tableID).Find(&fields).Error; err != nil {
 		return nil, err
 	}
-	return tables, nil
+	return fields, nil
 }
 
-func (s *TableService) UpdateTable(table *Table) error {
-	return s.db.Save(table).Error
-}
-
-func (s *TableService) DeleteTable(id string) error {
-	return s.db.Transaction(func(tx *gorm.DB) error {
-		// Delete fields and their options
-		if err := tx.Where("table_id = ?", id).Delete(&Field{}).Error; err != nil {
-			return err
-		}
-		
-		// Delete the table
-		if err := tx.Delete(&Table{}, "id = ?", id).Error; err != nil {
-			return err
-		}
-		
-		return nil
-	})
+func (s *TableService) ValidateField(field *Field) error {
+	if field.Name == "" {
+		return errors.New("field name is required")
+	}
+	if field.Type == "" {
+		return errors.New("field type is required")
+	}
+	return nil
 }
 
 func (s *TableService) AddField(field *Field) error {
@@ -162,12 +169,12 @@ func (s *TableService) DeleteField(id string) error {
 		if err := tx.Where("field_id = ?", id).Delete(&Option{}).Error; err != nil {
 			return err
 		}
-		
+
 		// Delete the field
 		if err := tx.Delete(&Field{}, "id = ?", id).Error; err != nil {
 			return err
 		}
-		
+
 		return nil
 	})
 }

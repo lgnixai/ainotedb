@@ -21,10 +21,16 @@ type Field struct {
 	Type        string    `json:"type"`
 	Required    bool      `json:"required"`
 	Unique      bool      `json:"unique"`
+	Description string    `json:"description"`
+	Default     string    `json:"default"`
 	Options     []Option  `json:"options,omitempty" gorm:"foreignKey:FieldID"`
+	Validation  string    `json:"validation"`
+	Metadata    JSON      `json:"metadata" gorm:"type:jsonb"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+type JSON map[string]interface{}
 
 type Option struct {
 	ID      string `json:"id" gorm:"primarykey"`

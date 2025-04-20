@@ -32,11 +32,12 @@
 - [x] Table permissions
 
 ### Field Management
-- [ ] Field type definitions
-- [ ] Create field
-- [ ] Update field
-- [ ] Delete field
-- [ ] Field validation
+- [x] Field type definitions
+- [x] Field validation
+- [x] Create field
+- [x] Update field
+- [x] Delete field
+- [x] Field metadata handling
 
 ### Record Management
 - [x] Create record
