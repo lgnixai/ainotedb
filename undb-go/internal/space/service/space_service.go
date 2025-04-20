@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"gorm.io/gorm"
+
 	"github.com/undb/undb-go/internal/space/model"
 	"github.com/undb/undb-go/internal/space/repository"
 	"github.com/undb/undb-go/pkg/utils"
-	"gorm.io/gorm"
 )
 
 // SpaceService 定义空间服务接口
@@ -110,7 +111,7 @@ func (s *spaceService) AddMember(ctx context.Context, spaceID, userID string, ro
 }
 
 func (s *spaceService) RemoveMember(ctx context.Context, spaceID, userID string) error {
-	return s.memberRepo.Delete(ctx, spaceID, userID)
+	return s.memberRepo.Delete(ctx, spaceID)
 }
 
 func (s *spaceService) UpdateMemberRole(ctx context.Context, spaceID, userID string, role model.MemberRole) error {

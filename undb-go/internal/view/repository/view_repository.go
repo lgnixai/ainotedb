@@ -21,6 +21,15 @@ type viewRepository struct {
 	db *gorm.DB
 }
 
+func (r *viewRepository) FindByID(ctx context.Context, id string) (*model.View, error) {
+	var view model.View
+	err := r.db.WithContext(ctx).First(&view, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &view, nil
+}
+
 // NewViewRepository creates a new view repository instance
 func NewViewRepository(db *gorm.DB) ViewRepository {
 	return &viewRepository{db: db}
@@ -32,13 +41,9 @@ func (r *viewRepository) Create(ctx context.Context, view *model.View) error {
 }
 
 // FindByID gets a view by ID
-func (r *viewRepository) FindByID(ctx context.Context, id string) (*model.View, error) {
-	var view model.View
-	err := r.db.WithContext(ctx).First(&view, "id = ?", id).Error
-	if err != nil {
-		return nil, err
-	}
-	return &view, nil
+func (r *viewRepository) GetByID(ctx context.Context, id string) (*model.View, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 // FindByTableID gets all views for a table

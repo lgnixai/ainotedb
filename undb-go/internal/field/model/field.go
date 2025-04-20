@@ -18,37 +18,37 @@ const (
 	FieldTypeSelect      FieldType = "select"
 	FieldTypeMultiSelect FieldType = "multi_select"
 	FieldTypeReference   FieldType = "reference"
-	FieldTypeLookup    FieldType = "lookup"
-	FieldTypeRollup    FieldType = "rollup"
+	FieldTypeLookup      FieldType = "lookup"
+	FieldTypeRollup      FieldType = "rollup"
 )
 
 // FieldOptions represents field options
 type FieldOptions struct {
 	// Reference field options
-	ForeignTableID string `json:"foreignTableId,omitempty"`
+	ForeignTableID   string `json:"foreignTableId,omitempty"`
 	SymmetricFieldID string `json:"symmetricFieldId,omitempty"`
 
 	// Lookup field options
 	ReferenceFieldID string `json:"referenceFieldId,omitempty"`
-	DisplayFieldID string `json:"displayFieldId,omitempty"`
+	DisplayFieldID   string `json:"displayFieldId,omitempty"`
 
 	// Rollup field options
-	RollupFieldID string `json:"rollupFieldId,omitempty"`
+	RollupFieldID     string `json:"rollupFieldId,omitempty"`
 	AggregateFunction string `json:"fn,omitempty"` // count, sum, avg, etc.
 }
 
 // Field represents a field
 type Field struct {
-	ID          string          `json:"id" gorm:"primaryKey"`
-	TableID     string          `json:"table_id" gorm:"index"`
-	Name        string          `json:"name"`
-	Type        FieldType       `json:"type"`
-	Description string          `json:"description"`
-	Required    bool            `json:"required"`
-	Unique      bool            `json:"unique"`
-	Options     FieldOptions    `json:"options,omitempty" gorm:"type:text"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          string       `json:"id" gorm:"primaryKey"`
+	TableID     string       `json:"table_id" gorm:"index"`
+	Name        string       `json:"name"`
+	Type        FieldType    `json:"type"`
+	Description string       `json:"description"`
+	Required    bool         `json:"required"`
+	Unique      bool         `json:"unique"`
+	Options     FieldOptions `json:"options,omitempty" gorm:"type:text"`
+	CreatedAt   time.Time    `json:"created_at"`
+	UpdatedAt   time.Time    `json:"updated_at"`
 }
 
 // TableName specifies table name
@@ -105,12 +105,9 @@ func isValidFieldType(t FieldType) bool {
 }
 
 var (
-	ErrEmptyFieldName     = &Error{Code: "empty_field_name", Message: "field name cannot be empty"}
-	ErrEmptyFieldType     = &Error{Code: "empty_field_type", Message: "field type cannot be empty"}
-	ErrInvalidFieldType   = &Error{Code: "invalid_field_type", Message: "invalid field type"}
 	ErrInvalidReferenceField = &Error{Code: "invalid_reference_field", Message: "invalid reference field"}
-	ErrInvalidLookupField = &Error{Code: "invalid_lookup_field", Message: "invalid lookup field"}
-	ErrInvalidRollupField = &Error{Code: "invalid_rollup_field", Message: "invalid rollup field"}
+	ErrInvalidLookupField    = &Error{Code: "invalid_lookup_field", Message: "invalid lookup field"}
+	ErrInvalidRollupField    = &Error{Code: "invalid_rollup_field", Message: "invalid rollup field"}
 )
 
 type Error struct {

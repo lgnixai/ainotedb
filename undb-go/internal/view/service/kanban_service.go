@@ -1,23 +1,25 @@
-
 package service
 
 import (
 	"context"
-	"github.com/undb/undb-go/internal/view/model"
-	"github.com/undb/undb-go/internal/record/model"
+
+	model2 `github.com/undb/undb-go/internal/record/model`
+	recordRepository `github.com/undb/undb-go/internal/record/repository`
+	`github.com/undb/undb-go/internal/view/model`
+	`github.com/undb/undb-go/internal/view/repository`
 )
 
 type KanbanService interface {
-	GetKanbanData(ctx context.Context, viewID string) (map[string][]*record.Record, error)
+	GetKanbanData(ctx context.Context, viewID string) (map[string][]*model2.Record, error)
 	UpdateCardPosition(ctx context.Context, cardID string, targetGroup string, position int) error
 }
 
 type kanbanService struct {
-	viewRepo   ViewRepository
-	recordRepo record.RecordRepository
+	viewRepo   repository.ViewRepository
+	recordRepo recordRepository.RecordRepository
 }
 
-func NewKanbanService(viewRepo ViewRepository, recordRepo record.RecordRepository) KanbanService {
+func NewKanbanService(viewRepo repository.ViewRepository, recordRepo recordRepository.RecordRepository) KanbanService {
 	return &kanbanService{
 		viewRepo:   viewRepo,
 		recordRepo: recordRepo,
@@ -32,7 +34,7 @@ func (s *kanbanService) GetKanbanData(ctx context.Context, viewID string) (map[s
 
 	kanbanView, ok := view.(*model.KanbanView)
 	if !ok {
-		return nil, ErrInvalidViewType
+		return nil, model.ErrInvalidViewType
 	}
 
 	records, err := s.recordRepo.GetByTableID(ctx, view.GetTableID())
@@ -41,7 +43,7 @@ func (s *kanbanService) GetKanbanData(ctx context.Context, viewID string) (map[s
 	}
 
 	// Group records by the kanban group field
-	groups := make(map[string][]*record.Record)
+	groups := make(map[string][]*model2.Record)
 	for _, record := range records {
 		groupValue := record.Data[kanbanView.GroupField].(string)
 		groups[groupValue] = append(groups[groupValue], record)

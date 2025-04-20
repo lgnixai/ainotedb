@@ -3,8 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/undb/undb-go/internal/table/model"
 	"gorm.io/gorm"
+
+	"github.com/undb/undb-go/internal/table/model"
 )
 
 // TableRepository 定义表格仓库接口
@@ -66,18 +67,4 @@ func (r *tableRepository) Update(ctx context.Context, table *model.Table) error 
 
 func (r *tableRepository) Delete(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).Delete(&model.Table{}, "id = ?", id).Error
-}
-package repository
-
-import (
-	"context"
-	"github.com/undb/undb-go/internal/table/domain"
-)
-
-type TableRepository interface {
-	Create(ctx context.Context, table *domain.Table) error
-	Update(ctx context.Context, table *domain.Table) error
-	Delete(ctx context.Context, id string) error
-	FindByID(ctx context.Context, id string) (*domain.Table, error)
-	FindBySpaceID(ctx context.Context, spaceID string) ([]*domain.Table, error)
 }

@@ -2,17 +2,17 @@ package database
 
 import (
 	"fmt"
+	"time"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
-	"time"
 	"gorm.io/gorm/logger"
 
-	"github.com/your-org/your-repo/auth" // Replace with your actual import path
-	"github.com/your-org/your-repo/record" // Replace with your actual import path
-	"github.com/your-org/your-repo/space" // Replace with your actual import path
-	"github.com/your-org/your-repo/table" // Replace with your actual import path
-	"github.com/your-org/your-repo/view" // Replace with your actual import path
+	"retable/internal/auth"   // Replace with your actual import path
+	"retable/internal/record" // Replace with your actual import path
+	"retable/internal/space"  // Replace with your actual import path
+	"retable/internal/table"  // Replace with your actual import path
+	"retable/internal/view"   // Replace with your actual import path
 
 )
 
@@ -43,8 +43,8 @@ func NewDatabase(url string) (*gorm.DB, error) {
 
 func (db *Database) AutoMigrate() error {
 	// Register all models for auto migration.  Note:  Some models from original
-        // are omitted due to inconsistencies in the provided changes.  Consider
-        // adding them back if needed.
+	// are omitted due to inconsistencies in the provided changes.  Consider
+	// adding them back if needed.
 	models := []interface{}{
 		&auth.User{},
 		&space.Space{},

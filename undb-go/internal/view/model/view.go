@@ -3,6 +3,8 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 // ViewType defines view type
@@ -85,14 +87,18 @@ func (v *View) UpdateConfig(config interface{}) error {
 
 //Error handling for validation
 
-//FilterGroup struct
+// FilterGroup struct
 type FilterGroup struct {
 	Filters []Filter `json:"filters"`
 }
 
-//Filter struct
+// Filter struct
 type Filter struct {
 	Field string `json:"field"`
 	Op    string `json:"op"`
 	Value string `json:"value"`
+}
+
+func (v *View) GetTableID() string {
+	return v.TableID
 }

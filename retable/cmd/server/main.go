@@ -1,9 +1,11 @@
-
 package main
 
 import (
 	"log"
+
 	"retable/internal/app"
+	`retable/internal/config`
+	`retable/internal/infrastructure/database`
 )
 
 func main() {

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	`github.com/golang-jwt/jwt`
 )
 
 type AuthService struct {

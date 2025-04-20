@@ -1,7 +1,5 @@
 package model
 
-import _ `time`
-
 // FilterOperator 定义过滤操作符
 type FilterOperator string
 

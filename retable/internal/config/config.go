@@ -1,4 +1,3 @@
-
 package config
 
 type Config struct {
@@ -9,7 +8,7 @@ type Config struct {
 func LoadConfig() *Config {
 	// TODO: Implement configuration loading from environment variables
 	return &Config{
-		PostgresURL: "postgres://postgres:postgres@localhost:5432/retable?sslmode=disable",
+		PostgresURL: "postgres://postgres:postgres@localhost:5432/undb?sslmode=disable",
 		RedisURL:    "redis://localhost:6379/0",
 	}
 }

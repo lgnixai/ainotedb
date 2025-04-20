@@ -9,4 +9,7 @@ var (
 	ErrEmptyFields = errors.New("record fields cannot be empty")
 	// ErrRecordNotFound 记录不存在
 	ErrRecordNotFound = errors.New("record not found")
+
+	ErrEmptyFieldID          = errors.New("empty field not found")
+	ErrInvalidFilterOperator = errors.New("err invalid filter operator not found")
 )
